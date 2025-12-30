@@ -1,43 +1,43 @@
-/** The storage namespace */
+/** 存储命名空间 */
 declare namespace StorageType {
   interface Session {
-    /** The theme color */
+    /** 主题颜色 */
     themeColor: string;
     // /**
-    //  * the theme settings
+    //  * 主题设置
     //  */
     // themeSettings: App.Theme.ThemeSetting;
   }
 
   interface Local {
-    /** The i18n language */
+    /** i18n 语言 */
     lang: App.I18n.LangType;
-    /** The token */
+    /** token */
     token: string;
-    /** Fixed sider with mix-menu */
+    /** 混合菜单的固定侧边栏 */
     mixSiderFixed: CommonType.YesOrNo;
-    /** The refresh token */
+    /** 刷新 token */
     refreshToken: string;
-    /** The theme color */
+    /** 主题颜色 */
     themeColor: string;
-    /** The dark mode */
+    /** 暗色模式 */
     darkMode: boolean;
-    /** The theme settings */
+    /** 主题设置 */
     themeSettings: App.Theme.ThemeSetting;
     /**
-     * The override theme flags
+     * 覆盖主题标志
      *
-     * The value is the build time of the project
+     * 值为项目的构建时间
      */
     overrideThemeFlag: string;
-    /** The global tabs */
+    /** 全局标签页 */
     globalTabs: App.Global.Tab[];
-    /** The backup theme setting before is mobile */
+    /** 移动端之前的备份主题设置 */
     backupThemeSettingBeforeIsMobile: {
       layout: UnionKey.ThemeLayoutMode;
       siderCollapse: boolean;
     };
-    /** The last login user id */
+    /** 上次登录的用户 ID */
     lastLoginUserId: string;
   }
 }

@@ -41,7 +41,7 @@ const presetModules = import.meta.glob('@/theme/preset/*.json', { eager: true, i
 
 const themeStore = useThemeStore();
 
-// Extract preset data
+// 提取预设数据
 const presets = computed(() =>
   Object.entries(presetModules)
     .map(([path, presetData]) => {
@@ -102,7 +102,7 @@ const applyPreset = (preset: ThemePreset): void => {
     tokens: { ...rest.tokens }
   });
 
-  // Apply NaiveUI theme overrides if present
+  // 如果存在，应用 NaiveUI 主题覆盖
   themeStore.setNaiveThemeOverrides(naiveui);
 
   window.$message?.success($t('theme.appearance.preset.applySuccess'));

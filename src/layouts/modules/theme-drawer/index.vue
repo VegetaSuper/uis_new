@@ -18,7 +18,7 @@ const activeTab = ref('appearance');
 const drawerWidth = computed(() => {
   const width = 400;
 
-  // On mobile devices, use 90% of viewport width with a maximum of 400px
+  // 在移动设备上，使用视口宽度的 90%，最大为 400px
   if (appStore.isMobile) {
     return `min(90vw, ${width}px)`;
   }

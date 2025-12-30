@@ -3,7 +3,7 @@ import { jsonClone } from '@sa/utils';
 import { SetupStoreId } from '@/enum';
 
 /**
- * The plugin reset the state of the store which is written by setup syntax
+ * 该插件重置使用 setup 语法编写的 store 的状态
  *
  * @param context
  */

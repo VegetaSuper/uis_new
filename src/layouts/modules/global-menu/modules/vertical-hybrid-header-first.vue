@@ -63,19 +63,19 @@ function handleSelectMenu(key: RouteKey) {
 
   const secondFirstMenuKey = secondLevelMenus.value[0].routeKey;
 
-  // Case 1: autoSelectFirstMenu disabled - only activate menu for display
+  // 情况 1：autoSelectFirstMenu 禁用 - 仅激活菜单用于显示
   if (!themeStore.sider.autoSelectFirstMenu) {
-    // Check if there are third-level menus
+    // 检查是否有三级菜单
     const hasChildren = secondLevelMenus.value.find(menu => menu.key === secondFirstMenuKey)?.children?.length;
 
-    // If there are third-level menus, expand them
+    // 如果有三级菜单，展开它们
     if (hasChildren) {
       handleSelectMixMenu(secondFirstMenuKey);
     }
     return;
   }
 
-  // Case 2: autoSelectFirstMenu enabled - navigate to deepest menu
+  // 情况 2：autoSelectFirstMenu 启用 - 导航到最深层级的菜单
   activeDeepestLevelMenuKey();
   setDrawerVisible(false);
 }

@@ -12,9 +12,9 @@ import { localStg } from '@/utils/storage';
 import { getRouteName } from '@/router/elegant/transform';
 
 /**
- * create route guard
+ * 创建路由守卫
  *
- * @param router router instance
+ * @param router 路由实例
  */
 export function createRouteGuard(router: Router) {
   router.beforeEach(async (to, from, next) => {
@@ -38,39 +38,39 @@ export function createRouteGuard(router: Router) {
     const hasRole = authStore.userInfo.roles.some(role => routeRoles.includes(role));
     const hasAuth = authStore.isStaticSuper || !routeRoles.length || hasRole;
 
-    // if it is login route when logged in, then switch to the root page
+    // 如果已登录时访问登录路由，则切换到根页面
     if (to.name === loginRoute && isLogin) {
       next({ name: rootRoute });
       return;
     }
 
-    // if the route does not need login, then it is allowed to access directly
+    // 如果路由不需要登录，则允许直接访问
     if (!needLogin) {
       handleRouteSwitch(to, from, next);
       return;
     }
 
-    // the route need login but the user is not logged in, then switch to the login page
+    // 路由需要登录但用户未登录，则切换到登录页
     if (!isLogin) {
       next({ name: loginRoute, query: { redirect: to.fullPath } });
       return;
     }
 
-    // if the user is logged in but does not have authorization, then switch to the 403 page
+    // 如果用户已登录但没有权限，则切换到 403 页面
     if (!hasAuth) {
       next({ name: noAuthorizationRoute });
       return;
     }
 
-    // switch route normally
+    // 正常切换路由
     handleRouteSwitch(to, from, next);
   });
 }
 
 /**
- * initialize route
+ * 初始化路由
  *
- * @param to to route
+ * @param to 目标路由
  */
 async function initRoute(to: RouteLocationNormalized): Promise<RouteLocationRaw | null> {
   const routeStore = useRouteStore();
@@ -78,12 +78,12 @@ async function initRoute(to: RouteLocationNormalized): Promise<RouteLocationRaw 
   const notFoundRoute: RouteKey = 'not-found';
   const isNotFoundRoute = to.name === notFoundRoute;
 
-  // if the constant route is not initialized, then initialize the constant route
+  // 如果常量路由未初始化，则初始化常量路由
   if (!routeStore.isInitConstantRoute) {
     await routeStore.initConstantRoute();
 
-    // the route is captured by the "not-found" route because the constant route is not initialized
-    // after the constant route is initialized, redirect to the original route
+    // 由于常量路由未初始化，路由被 "not-found" 路由捕获
+    // 在常量路由初始化后，重定向到原始路由
     const path = to.fullPath;
     const location: RouteLocationRaw = {
       path,
@@ -98,14 +98,14 @@ async function initRoute(to: RouteLocationNormalized): Promise<RouteLocationRaw 
   const isLogin = Boolean(localStg.get('token'));
 
   if (!isLogin) {
-    // if the user is not logged in and the route is a constant route but not the "not-found" route, then it is allowed to access.
+    // 如果用户未登录且路由是常量路由但不是 "not-found" 路由，则允许访问
     if (to.meta.constant && !isNotFoundRoute) {
       routeStore.onRouteSwitchWhenNotLoggedIn();
 
       return null;
     }
 
-    // if the user is not logged in, then switch to the login page
+    // 如果用户未登录，则切换到登录页
     const loginRoute: RouteKey = 'login';
     const query = getRouteQueryOfLoginRoute(to, routeStore.routeHome);
 
@@ -118,11 +118,11 @@ async function initRoute(to: RouteLocationNormalized): Promise<RouteLocationRaw 
   }
 
   if (!routeStore.isInitAuthRoute) {
-    // initialize the auth route
+    // 初始化权限路由
     await routeStore.initAuthRoute();
 
-    // the route is captured by the "not-found" route because the auth route is not initialized
-    // after the auth route is initialized, redirect to the original route
+    // 由于权限路由未初始化，路由被 "not-found" 路由捕获
+    // 在权限路由初始化后，重定向到原始路由
     if (isNotFoundRoute) {
       const rootRoute: RouteKey = 'root';
       const path = to.redirectedFrom?.name === rootRoute ? '/' : to.fullPath;
@@ -140,13 +140,13 @@ async function initRoute(to: RouteLocationNormalized): Promise<RouteLocationRaw 
 
   routeStore.onRouteSwitchWhenLoggedIn();
 
-  // the auth route is initialized
-  // it is not the "not-found" route, then it is allowed to access
+  // 权限路由已初始化
+  // 如果不是 "not-found" 路由，则允许访问
   if (!isNotFoundRoute) {
     return null;
   }
 
-  // it is captured by the "not-found" route, then check whether the route exists
+  // 如果被 "not-found" 路由捕获，则检查路由是否存在
   const exist = await routeStore.getIsAuthRouteExist(to.path as RoutePath);
   const noPermissionRoute: RouteKey = '403';
 
@@ -162,7 +162,7 @@ async function initRoute(to: RouteLocationNormalized): Promise<RouteLocationRaw 
 }
 
 function handleRouteSwitch(to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) {
-  // route with href
+  // 带有 href 的路由
   if (to.meta.href) {
     window.open(to.meta.href, '_blank');
 

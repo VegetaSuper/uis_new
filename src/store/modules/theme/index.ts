@@ -144,7 +144,7 @@ export const useThemeStore = defineStore(SetupStoreId.Theme, () => {
     let colorValue = color;
 
     if (settings.value.recommendColor) {
-      // get a color palette by provided color and color name, and use the suitable color
+      // 根据提供的颜色和颜色名称获取调色板，并使用合适的颜色
 
       colorValue = getPaletteColorByNumber(color, 500, true);
     }
@@ -222,7 +222,7 @@ export const useThemeStore = defineStore(SetupStoreId.Theme, () => {
     }
   }
 
-  /** Cache theme settings */
+  /** 缓存主题设置 */
   function cacheThemeSettings() {
     const isProd = import.meta.env.PROD;
 
@@ -231,14 +231,14 @@ export const useThemeStore = defineStore(SetupStoreId.Theme, () => {
     localStg.set('themeSettings', settings.value);
   }
 
-  // cache theme settings when page is closed or refreshed
+  // 当页面关闭或刷新时缓存主题设置
   useEventListener(window, 'beforeunload', () => {
     cacheThemeSettings();
   });
 
-  // watch store
+  // 监听 store
   scope.run(() => {
-    // watch dark mode
+    // 监听暗色模式
     watch(
       darkMode,
       val => {
@@ -256,7 +256,7 @@ export const useThemeStore = defineStore(SetupStoreId.Theme, () => {
       { immediate: true }
     );
 
-    // themeColors change, update css vars and storage theme color
+    // themeColors 变化时，更新 CSS 变量并存储主题颜色
     watch(
       themeColors,
       val => {
@@ -266,7 +266,7 @@ export const useThemeStore = defineStore(SetupStoreId.Theme, () => {
       { immediate: true }
     );
 
-    // watch watermark settings to control timer
+    // 监听水印设置以控制定时器
     watch(
       () => [settings.value.watermark.visible, settings.value.watermark.enableTime],
       () => {

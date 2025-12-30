@@ -139,7 +139,7 @@ watch(
   }
 );
 
-// init
+// 初始化
 init();
 </script>
 

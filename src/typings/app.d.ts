@@ -1,115 +1,113 @@
-/** The global namespace for the app */
+/** 应用程序的全局命名空间 */
 declare namespace App {
-  /** Theme namespace */
+  /** 主题命名空间 */
   namespace Theme {
     type ColorPaletteNumber = import('@sa/color').ColorPaletteNumber;
 
-    /** NaiveUI theme overrides that can be specified in preset */
+    /** 可在预设中指定的 NaiveUI 主题覆盖 */
     type NaiveUIThemeOverride = import('naive-ui').GlobalThemeOverrides;
 
-    /** Theme setting */
+    /** 主题设置 */
     interface ThemeSetting {
-      /** Theme scheme */
+      /** 主题方案 */
       themeScheme: UnionKey.ThemeScheme;
-      /** grayscale mode */
+      /** 灰度模式 */
       grayscale: boolean;
-      /** colour weakness mode */
+      /** 色弱模式 */
       colourWeakness: boolean;
-      /** Whether to recommend color */
+      /** 是否推荐颜色 */
       recommendColor: boolean;
-      /** Theme color */
+      /** 主题颜色 */
       themeColor: string;
-      /** Theme radius */
+      /** 主题圆角 */
       themeRadius: number;
-      /** Other color */
+      /** 其他颜色 */
       otherColor: OtherColor;
-      /** Whether info color is followed by the primary color */
+      /** 信息颜色是否跟随主色 */
       isInfoFollowPrimary: boolean;
-      /** Layout */
+      /** 布局 */
       layout: {
-        /** Layout mode */
+        /** 布局模式 */
         mode: UnionKey.ThemeLayoutMode;
-        /** Scroll mode */
+        /** 滚动模式 */
         scrollMode: UnionKey.ThemeScrollMode;
       };
-      /** Page */
+      /** 页面 */
       page: {
-        /** Whether to show the page transition */
+        /** 是否显示页面过渡 */
         animate: boolean;
-        /** Page animate mode */
+        /** 页面动画模式 */
         animateMode: UnionKey.ThemePageAnimateMode;
       };
-      /** Header */
+      /** 头部 */
       header: {
-        /** Header height */
+        /** 头部高度 */
         height: number;
-        /** Header breadcrumb */
+        /** 头部面包屑 */
         breadcrumb: {
-          /** Whether to show the breadcrumb */
+          /** 是否显示面包屑 */
           visible: boolean;
-          /** Whether to show the breadcrumb icon */
+          /** 是否显示面包屑图标 */
           showIcon: boolean;
         };
-        /** Multilingual */
+        /** 多语言 */
         multilingual: {
-          /** Whether to show the multilingual */
+          /** 是否显示多语言 */
           visible: boolean;
         };
         globalSearch: {
-          /** Whether to show the GlobalSearch */
+          /** 是否显示全局搜索 */
           visible: boolean;
         };
       };
-      /** Tab */
+      /** 标签页 */
       tab: {
-        /** Whether to show the tab */
+        /** 是否显示标签页 */
         visible: boolean;
         /**
-         * Whether to cache the tab
+         * 是否缓存标签页
          *
-         * If cache, the tabs will get from the local storage when the page is refreshed
+         * 如果缓存，页面刷新时标签页将从本地存储中获取
          */
         cache: boolean;
-        /** Tab height */
+        /** 标签页高度 */
         height: number;
-        /** Tab mode */
+        /** 标签页模式 */
         mode: UnionKey.ThemeTabMode;
-        /** Whether to close tab by middle click */
+        /** 是否通过中键点击关闭标签页 */
         closeTabByMiddleClick: boolean;
       };
-      /** Fixed header and tab */
+      /** 固定头部和标签页 */
       fixedHeaderAndTab: boolean;
-      /** Sider */
+      /** 侧边栏 */
       sider: {
-        /** Inverted sider */
+        /** 反转侧边栏 */
         inverted: boolean;
-        /** Sider width */
+        /** 侧边栏宽度 */
         width: number;
-        /** Collapsed sider width */
+        /** 折叠侧边栏宽度 */
         collapsedWidth: number;
-        /** Sider width when the layout is 'vertical-mix', 'top-hybrid-sidebar-first', or 'top-hybrid-header-first' */
+        /** 当布局为 'vertical-mix'、'top-hybrid-sidebar-first' 或 'top-hybrid-header-first' 时的侧边栏宽度 */
         mixWidth: number;
         /**
-         * Collapsed sider width when the layout is 'vertical-mix', 'top-hybrid-sidebar-first', or
-         * 'top-hybrid-header-first'
+         * 当布局为 'vertical-mix'、'top-hybrid-sidebar-first' 或 'top-hybrid-header-first' 时的折叠侧边栏宽度
          */
         mixCollapsedWidth: number;
-        /** Child menu width when the layout is 'vertical-mix', 'top-hybrid-sidebar-first', or 'top-hybrid-header-first' */
+        /** 当布局为 'vertical-mix'、'top-hybrid-sidebar-first' 或 'top-hybrid-header-first' 时的子菜单宽度 */
         mixChildMenuWidth: number;
-        /** Whether to auto select the first submenu */
+        /** 是否自动选择第一个子菜单 */
         autoSelectFirstMenu: boolean;
       };
-      /** Footer */
+      /** 页脚 */
       footer: {
-        /** Whether to show the footer */
+        /** 是否显示页脚 */
         visible: boolean;
-        /** Whether fixed the footer */
+        /** 是否固定页脚 */
         fixed: boolean;
-        /** Footer height */
+        /** 页脚高度 */
         height: number;
         /**
-         * Whether float the footer to the right when the layout is 'top-hybrid-sidebar-first' or
-         * 'top-hybrid-header-first'
+         * 当布局为 'top-hybrid-sidebar-first' 或 'top-hybrid-header-first' 时，是否将页脚浮动到右侧
          */
         right: boolean;
       };
@@ -198,35 +196,35 @@ declare namespace App {
       params?: Record<string, string>;
     };
 
-    /** The global header props */
+    /** 全局头部属性 */
     interface HeaderProps {
-      /** Whether to show the logo */
+      /** 是否显示 Logo */
       showLogo?: boolean;
-      /** Whether to show the menu toggler */
+      /** 是否显示菜单切换器 */
       showMenuToggler?: boolean;
-      /** Whether to show the menu */
+      /** 是否显示菜单 */
       showMenu?: boolean;
     }
 
-    /** The global menu */
+    /** 全局菜单 */
     type Menu = {
       /**
-       * The menu key
+       * 菜单 key
        *
-       * Equal to the route key
+       * 等于路由 key
        */
       key: string;
-      /** The menu label */
+      /** 菜单标签 */
       label: string;
-      /** The menu i18n key */
+      /** 菜单 i18n key */
       i18nKey?: I18n.I18nKey | null;
-      /** The route key */
+      /** 路由 key */
       routeKey: RouteKey;
-      /** The route path */
+      /** 路由路径 */
       routePath: RoutePath;
-      /** The menu icon */
+      /** 菜单图标 */
       icon?: () => VNode;
-      /** The menu children */
+      /** 菜单子项 */
       children?: Menu[];
     };
 
@@ -234,63 +232,63 @@ declare namespace App {
       options?: Breadcrumb[];
     };
 
-    /** Tab route */
+    /** 标签页路由 */
     type TabRoute = Pick<RouteLocationNormalizedLoaded, 'name' | 'path' | 'meta'> &
       Partial<Pick<RouteLocationNormalizedLoaded, 'fullPath' | 'query' | 'matched'>>;
 
-    /** The global tab */
+    /** 全局标签页 */
     type Tab = {
-      /** The tab id */
+      /** 标签页 id */
       id: string;
-      /** The tab label */
+      /** 标签页标签 */
       label: string;
       /**
-       * The new tab label
+       * 新标签页标签
        *
-       * If set, the tab label will be replaced by this value
+       * 如果设置，标签页标签将被此值替换
        */
       newLabel?: string;
       /**
-       * The old tab label
+       * 旧标签页标签
        *
-       * when reset the tab label, the tab label will be replaced by this value
+       * 重置标签页标签时，标签页标签将被此值替换
        */
       oldLabel?: string;
-      /** The tab route key */
+      /** 标签页路由 key */
       routeKey: LastLevelRouteKey;
-      /** The tab route path */
+      /** 标签页路由路径 */
       routePath: RouteMap[LastLevelRouteKey];
-      /** The tab route full path */
+      /** 标签页路由完整路径 */
       fullPath: string;
-      /** The tab fixed index */
+      /** 标签页固定索引 */
       fixedIndex?: number | null;
       /**
-       * Tab icon
+       * 标签页图标
        *
-       * Iconify icon
+       * Iconify 图标
        */
       icon?: string;
       /**
-       * Tab local icon
+       * 标签页本地图标
        *
-       * Local icon
+       * 本地图标
        */
       localIcon?: string;
       /** I18n key */
       i18nKey?: I18n.I18nKey | null;
     };
 
-    /** Form rule */
+    /** 表单规则 */
     type FormRule = import('naive-ui').FormItemRule;
 
-    /** The global dropdown key */
+    /** 全局下拉菜单 key */
     type DropdownKey = 'closeCurrent' | 'closeOther' | 'closeLeft' | 'closeRight' | 'closeAll' | 'pin' | 'unpin';
   }
 
   /**
-   * I18n namespace
+   * I18n 命名空间
    *
-   * Locales type
+   * 语言环境类型
    */
   namespace I18n {
     type RouteKey = import('@elegant-router/types').RouteKey;
@@ -338,6 +336,7 @@ declare namespace App {
         error: string;
         index: string;
         keywordSearch: string;
+        login: string;
         logout: string;
         logoutConfirm: string;
         lookForward: string;

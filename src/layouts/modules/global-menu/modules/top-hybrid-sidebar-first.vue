@@ -30,7 +30,7 @@ const { selectedKey } = useMenu();
 function handleSelectMenu(key: RouteKey) {
   handleSelectFirstLevelMenu(key);
 
-  // if there are second level menus, select the deepest one by default
+  // 如果有二级菜单，默认选择最深层级的菜单
   activeDeepestLevelMenuKey();
 }
 </script>

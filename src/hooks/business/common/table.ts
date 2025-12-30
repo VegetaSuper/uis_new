@@ -13,13 +13,13 @@ export type UseNaiveTableOptions<ResponseData, ApiData, Pagination extends boole
   'pagination' | 'getColumnChecks' | 'getColumns'
 > & {
   /**
-   * get column visible
+   * 获取列是否可见
    *
    * @param column
    *
    * @default true
    *
-   * @returns true if the column is visible, false otherwise
+   * @returns 如果列可见返回 true，否则返回 false
    */
   getColumnVisible?: (column: NaiveUI.TableColumn<ApiData>) => boolean;
 };
@@ -38,7 +38,7 @@ export function useNaiveTable<ResponseData, ApiData>(options: UseNaiveTableOptio
     getColumns
   });
 
-  // calculate the total width of the table this is used for horizontal scrolling
+  // 计算表格的总宽度，用于水平滚动
   const scrollX = computed(() => {
     return result.columns.value.reduce((acc, column) => {
       return acc + Number(column.width ?? column.minWidth ?? 120);
@@ -69,7 +69,7 @@ type PaginationParams = Pick<PaginationProps, 'page' | 'pageSize'>;
 type UseNaivePaginatedTableOptions<ResponseData, ApiData> = UseNaiveTableOptions<ResponseData, ApiData, true> & {
   paginationProps?: Omit<PaginationProps, 'page' | 'pageSize' | 'itemCount'>;
   /**
-   * whether to show the total count of the table
+   * 是否显示表格的总数
    *
    * @default true
    */
@@ -104,7 +104,7 @@ export function useNaivePaginatedTable<ResponseData, ApiData>(
     ...options.paginationProps
   }) as PaginationProps;
 
-  // this is for mobile, if the system does not support mobile, you can use `pagination` directly
+  // 这是用于移动端的，如果系统不支持移动端，可以直接使用 `pagination`
   const mobilePagination = computed(() => {
     const p: PaginationProps = {
       ...pagination,
@@ -186,7 +186,7 @@ export function useTableOperate<TableData>(
     openDrawer();
   }
 
-  /** the editing row data */
+  /** 正在编辑的行数据 */
   const editingData = shallowRef<TableData | null>(null);
 
   function handleEdit(id: TableData[keyof TableData]) {
@@ -197,10 +197,10 @@ export function useTableOperate<TableData>(
     openDrawer();
   }
 
-  /** the checked row keys of table */
+  /** 表格选中的行 keys */
   const checkedRowKeys = shallowRef<string[]>([]);
 
-  /** the hook after the batch delete operation is completed */
+  /** 批量删除操作完成后的钩子 */
   async function onBatchDeleted() {
     window.$message?.success($t('common.deleteSuccess'));
 
@@ -209,7 +209,7 @@ export function useTableOperate<TableData>(
     await getData();
   }
 
-  /** the hook after the delete operation is completed */
+  /** 删除操作完成后的钩子 */
   async function onDeleted() {
     window.$message?.success($t('common.deleteSuccess'));
 

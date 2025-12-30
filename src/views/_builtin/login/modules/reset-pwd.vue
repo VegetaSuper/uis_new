@@ -39,7 +39,7 @@ const rules = computed<RuleRecord>(() => {
 
 async function handleSubmit() {
   await validate();
-  // request to reset password
+  // 请求重置密码
   window.$message?.success($t('page.login.common.validateSuccess'));
 }
 </script>

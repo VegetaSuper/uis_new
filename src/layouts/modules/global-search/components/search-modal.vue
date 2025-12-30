@@ -34,7 +34,7 @@ function search() {
 }
 
 function handleClose() {
-  // handle with setTimeout to prevent user from seeing some operations
+  // 使用 setTimeout 处理以防止用户看到某些操作
   setTimeout(() => {
     visible.value = false;
     resultOptions.value = [];

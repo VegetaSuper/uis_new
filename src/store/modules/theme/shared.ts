@@ -7,15 +7,15 @@ import { localStg } from '@/utils/storage';
 import { overrideThemeSettings, themeSettings } from '@/theme/settings';
 import { themeVars } from '@/theme/vars';
 
-/** Init theme settings */
+/** 初始化主题设置 */
 export function initThemeSettings() {
   const isProd = import.meta.env.PROD;
 
-  // if it is development mode, the theme settings will not be cached, by update `themeSettings` in `src/theme/settings.ts` to update theme settings
+  // 如果是开发模式，主题设置不会被缓存，通过更新 `src/theme/settings.ts` 中的 `themeSettings` 来更新主题设置
   if (!isProd) return themeSettings;
 
-  // if it is production mode, the theme settings will be cached in localStorage
-  // if want to update theme settings when publish new version, please update `overrideThemeSettings` in `src/theme/settings.ts`
+  // 如果是生产模式，主题设置将缓存在 localStorage 中
+  // 如果要在发布新版本时更新主题设置，请更新 `src/theme/settings.ts` 中的 `overrideThemeSettings`
 
   const localSettings = localStg.get('themeSettings');
 
@@ -260,7 +260,7 @@ export function getNaiveTheme(
     }
   };
 
-  // If there are overrides, merge them with priority
-  // overrides has higher priority than auto-generated theme
+  // 如果有覆盖，则合并它们并设置优先级
+  // 覆盖的优先级高于自动生成的主题
   return overrides ? defu(overrides, theme) : theme;
 }

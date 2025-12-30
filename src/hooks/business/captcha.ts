@@ -48,7 +48,7 @@ export function useCaptcha() {
 
     startLoading();
 
-    // request
+    // 请求验证码
     await new Promise(resolve => {
       setTimeout(resolve, 500);
     });

@@ -1,49 +1,49 @@
 /**
- * Namespace Api
+ * 命名空间 Api
  *
- * All backend api type
+ * 所有后端 API 类型
  */
 declare namespace Api {
   namespace Common {
-    /** common params of paginating */
+    /** 分页通用参数 */
     interface PaginatingCommonParams {
-      /** current page number */
+      /** 当前页码 */
       current: number;
-      /** page size */
+      /** 每页大小 */
       size: number;
-      /** total count */
+      /** 总数 */
       total: number;
     }
 
-    /** common params of paginating query list data */
+    /** 分页查询列表数据的通用参数 */
     interface PaginatingQueryRecord<T = any> extends PaginatingCommonParams {
       records: T[];
     }
 
-    /** common search params of table */
+    /** 表格通用搜索参数 */
     type CommonSearchParams = Pick<Common.PaginatingCommonParams, 'current' | 'size'>;
 
     /**
-     * enable status
+     * 启用状态
      *
-     * - "1": enabled
-     * - "2": disabled
+     * - "1": 已启用
+     * - "2": 已禁用
      */
     type EnableStatus = '1' | '2';
 
-    /** common record */
+    /** 通用记录 */
     type CommonRecord<T = any> = {
-      /** record id */
+      /** 记录 ID */
       id: number;
-      /** record creator */
+      /** 记录创建者 */
       createBy: string;
-      /** record create time */
+      /** 记录创建时间 */
       createTime: string;
-      /** record updater */
+      /** 记录更新者 */
       updateBy: string;
-      /** record update time */
+      /** 记录更新时间 */
       updateTime: string;
-      /** record status */
+      /** 记录状态 */
       status: EnableStatus | null;
     } & T;
   }

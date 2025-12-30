@@ -1,8 +1,8 @@
 declare namespace Api {
   /**
-   * namespace Auth
+   * 命名空间 Auth
    *
-   * backend api module: "auth"
+   * 后端 API 模块: "auth"
    */
   namespace Auth {
     interface LoginToken {

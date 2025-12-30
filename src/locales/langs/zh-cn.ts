@@ -1,6 +1,6 @@
 const local: App.I18n.Schema = {
   system: {
-    title: 'Soybean 管理系统',
+    title: 'UIS · 统一数字化管理系统',
     updateTitle: '系统版本更新通知',
     updateContent: '检测到系统有新版本发布，是否立即刷新页面？',
     updateConfirm: '立即刷新',
@@ -27,6 +27,7 @@ const local: App.I18n.Schema = {
     error: '错误',
     index: '序号',
     keywordSearch: '请输入关键词搜索',
+    login: '登录',
     logout: '退出登录',
     logoutConfirm: '确认退出登录吗？',
     lookForward: '敬请期待',

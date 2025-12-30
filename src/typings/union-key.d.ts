@@ -1,27 +1,27 @@
-/** The union key namespace */
+/** 联合 key 命名空间 */
 declare namespace UnionKey {
   /**
-   * The login module
+   * 登录模块
    *
-   * - pwd-login: password login
-   * - code-login: phone code login
-   * - register: register
-   * - reset-pwd: reset password
-   * - bind-wechat: bind wechat
+   * - pwd-login: 密码登录
+   * - code-login: 手机验证码登录
+   * - register: 注册
+   * - reset-pwd: 重置密码
+   * - bind-wechat: 绑定微信
    */
   type LoginModule = 'pwd-login' | 'code-login' | 'register' | 'reset-pwd' | 'bind-wechat';
 
-  /** Theme scheme */
+  /** 主题方案 */
   type ThemeScheme = 'light' | 'dark' | 'auto';
 
   /**
-   * The layout mode
+   * 布局模式
    *
-   * - vertical: the vertical menu in left
-   * - horizontal: the horizontal menu in top
-   * - vertical-mix: two vertical mixed menus in left
-   * - top-hybrid-sidebar-first: the vertical first level menus in left and horizontal child level menus in top
-   * - top-hybrid-header-first: the horizontal first level menus in top and vertical child level menus in left
+   * - vertical: 左侧垂直菜单
+   * - horizontal: 顶部水平菜单
+   * - vertical-mix: 左侧两个垂直混合菜单
+   * - top-hybrid-sidebar-first: 左侧垂直一级菜单和顶部水平子级菜单
+   * - top-hybrid-header-first: 顶部水平一级菜单和左侧垂直子级菜单
    */
   type ThemeLayoutMode =
     | 'vertical'
@@ -32,25 +32,25 @@ declare namespace UnionKey {
     | 'top-hybrid-header-first';
 
   /**
-   * The scroll mode when content overflow
+   * 内容溢出时的滚动模式
    *
-   * - wrapper: the wrapper component's root element overflow
-   * - content: the content component overflow
+   * - wrapper: 包装组件根元素溢出
+   * - content: 内容组件溢出
    */
   type ThemeScrollMode = import('@sa/materials').LayoutScrollMode;
 
-  /** Page animate mode */
+  /** 页面动画模式 */
   type ThemePageAnimateMode = 'fade' | 'fade-slide' | 'fade-bottom' | 'fade-scale' | 'zoom-fade' | 'zoom-out' | 'none';
 
   /**
-   * Tab mode
+   * 标签页模式
    *
-   * - chrome: chrome style
-   * - button: button style
+   * - chrome: Chrome 风格
+   * - button: 按钮风格
    */
   type ThemeTabMode = import('@sa/materials').PageTabMode;
 
-  /** Unocss animate key */
+  /** Unocss 动画 key */
   type UnoCssAnimateKey =
     | 'pulse'
     | 'bounce'

@@ -1,7 +1,7 @@
 import { $t } from '@/locales';
 
 /**
- * Transform record to option
+ * 将记录转换为选项
  *
  * @example
  *   ```ts
@@ -26,7 +26,7 @@ export function transformRecordToOption<T extends Record<string, string>>(record
 }
 
 /**
- * Translate options
+ * 翻译选项
  *
  * @param options
  */
@@ -38,7 +38,7 @@ export function translateOptions(options: CommonType.Option<string, App.I18n.I18
 }
 
 /**
- * Toggle html class
+ * 切换 HTML 类名
  *
  * @param className
  */

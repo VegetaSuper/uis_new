@@ -81,14 +81,14 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
     setDayjsLocale(locale.value);
   }
 
-  // watch store
+  // 监听 store
   scope.run(() => {
-    // watch isMobile, if is mobile, collapse sider
+    // 监听 isMobile，如果是移动端，折叠侧边栏
     watch(
       isMobile,
       newValue => {
         if (newValue) {
-          // backup theme setting before is mobile
+          // 在移动端之前备份主题设置
           localStg.set('backupThemeSettingBeforeIsMobile', {
             layout: themeStore.layout.mode,
             siderCollapse: siderCollapse.value
@@ -97,7 +97,7 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
           themeStore.setThemeLayout('vertical');
           setSiderCollapse(true);
         } else {
-          // when is not mobile, recover the backup theme setting
+          // 当不是移动端时，恢复备份的主题设置
           const backup = localStg.get('backupThemeSettingBeforeIsMobile');
 
           if (backup) {
@@ -113,33 +113,33 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
       { immediate: true }
     );
 
-    // watch locale
+    // 监听语言环境
     watch(locale, () => {
-      // update document title by locale
+      // 根据语言环境更新文档标题
       updateDocumentTitleByLocale();
 
-      // update global menus by locale
+      // 根据语言环境更新全局菜单
       routeStore.updateGlobalMenusByLocale();
 
-      // update tabs by locale
+      // 根据语言环境更新标签页
       tabStore.updateTabsByLocale();
 
-      // set dayjs locale
+      // 设置 dayjs 语言环境
       setDayjsLocale(locale.value);
     });
   });
 
-  // cache mixSiderFixed
+  // 缓存 mixSiderFixed
   useEventListener(window, 'beforeunload', () => {
     localStg.set('mixSiderFixed', mixSiderFixed.value ? 'Y' : 'N');
   });
 
-  /** On scope dispose */
+  /** 作用域销毁时 */
   onScopeDispose(() => {
     scope.stop();
   });
 
-  // init
+  // 初始化
   init();
 
   return {

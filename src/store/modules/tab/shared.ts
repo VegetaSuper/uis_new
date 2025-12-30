@@ -64,7 +64,7 @@ export function getTabByRoute(route: App.Global.TabRoute) {
 
   const { title, i18nKey, fixedIndexInTab } = meta;
 
-  // Get icon and localIcon from getRouteIcons function
+  // 从 getRouteIcons 函数获取 icon 和 localIcon
   const { icon, localIcon } = getRouteIcons(route);
 
   const label = i18nKey ? $t(i18nKey) : title;
@@ -85,21 +85,20 @@ export function getTabByRoute(route: App.Global.TabRoute) {
 }
 
 /**
- * The vue router will automatically merge the meta of all matched items, and the icons here may be affected by other
- * matching items, so they need to be processed separately
+ * Vue Router 会自动合并所有匹配项的 meta，这里的图标可能会受到其他匹配项的影响，因此需要单独处理
  *
  * @param route
  */
 export function getRouteIcons(route: App.Global.TabRoute) {
-  // Set default value for icon at the beginning
+  // 首先设置 icon 的默认值
   let icon: string = route?.meta?.icon || import.meta.env.VITE_MENU_ICON;
   let localIcon: string | undefined = route?.meta?.localIcon;
 
-  // Route.matched only appears when there are multiple matches,so check if route.matched exists
+  // Route.matched 只在有多个匹配项时出现，因此检查 route.matched 是否存在
   if (route.matched) {
-    // Find the meta of the current route from matched
+    // 从 matched 中查找当前路由的 meta
     const currentRoute = route.matched.find(r => r.name === route.name);
-    // If icon exists in currentRoute.meta, it will overwrite the default value
+    // 如果 currentRoute.meta 中存在 icon，它将覆盖默认值
     icon = currentRoute?.meta?.icon || icon;
     localIcon = currentRoute?.meta?.localIcon;
   }

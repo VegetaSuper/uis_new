@@ -1,9 +1,9 @@
 import NProgress from 'nprogress';
 
-/** Setup plugin NProgress */
+/** 设置 NProgress 插件 */
 export function setupNProgress() {
   NProgress.configure({ easing: 'ease', speed: 500 });
 
-  // mount on window
+  // 挂载到 window
   window.NProgress = NProgress;
 }

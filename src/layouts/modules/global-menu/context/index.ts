@@ -130,7 +130,7 @@ function useMixMenu() {
     const deepestLevelMenuKey = getDeepestLevelMenuKey();
     if (!deepestLevelMenuKey) return;
 
-    // select the deepest second level menu
+    // 选择最深层级的二级菜单
     handleSelectSecondLevelMenu(deepestLevelMenuKey);
   }
 
@@ -138,7 +138,7 @@ function useMixMenu() {
     () => route.name,
     () => {
       getActiveFirstLevelMenuKey();
-      // if there are child level menus, get the active second level menu key
+      // 如果有子级菜单，获取活动的二级菜单 key
       if (hasChildLevelMenus.value) {
         getActiveSecondLevelMenuKey();
       }

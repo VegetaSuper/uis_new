@@ -11,7 +11,7 @@ export function setupAppErrorHandle(app: App) {
 }
 
 export function setupAppVersionNotification() {
-  // Update check interval in milliseconds
+  // 更新检查间隔（毫秒）
   const UPDATE_CHECK_INTERVAL = 3 * 60 * 1000;
 
   const canAutoUpdateApp = import.meta.env.VITE_AUTOMATICALLY_DETECT_UPDATE === 'Y' && import.meta.env.PROD;
@@ -25,14 +25,14 @@ export function setupAppVersionNotification() {
 
     const buildTime = await getHtmlBuildTime();
 
-    // If failed to get build time or build time hasn't changed, no update is needed.
+    // 如果获取构建时间失败或构建时间未改变，则不需要更新
     if (!buildTime || buildTime === BUILD_TIME) {
       return;
     }
 
     isShow = true;
 
-    // Show update notification
+    // 显示更新通知
     const n = window.$notification?.create({
       title: $t('system.updateTitle'),
       content: $t('system.updateContent'),
@@ -73,9 +73,9 @@ export function setupAppVersionNotification() {
     updateInterval = setInterval(checkForUpdates, UPDATE_CHECK_INTERVAL);
   };
 
-  // If updates should be checked, set up the visibility change listener and start the update interval
+  // 如果需要检查更新，设置可见性变化监听器并启动更新间隔
   if (!isShow && document.visibilityState === 'visible') {
-    // Check for updates when the document is visible
+    // 当文档可见时检查更新
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') {
         checkForUpdates();
@@ -83,7 +83,7 @@ export function setupAppVersionNotification() {
       }
     });
 
-    // Start the update interval
+    // 启动更新间隔
     startUpdateInterval();
   }
 }

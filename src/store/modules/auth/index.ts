@@ -54,20 +54,20 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     routeStore.resetStore();
   }
 
-  /** Record the user ID of the previous login session Used to compare with the current user ID on next login */
+  /** 记录上一次登录会话的用户 ID，用于与下次登录时的当前用户 ID 进行比较 */
   function recordUserId() {
     if (!userInfo.userId) {
       return;
     }
 
-    // Store current user ID locally for next login comparison
+    // 在本地存储当前用户 ID，用于下次登录时比较
     localStg.set('lastLoginUserId', userInfo.userId);
   }
 
   /**
-   * Check if current login user is different from previous login user If different, clear all tabs
+   * 检查当前登录用户是否与上一次登录用户不同，如果不同，清除所有标签页
    *
-   * @returns {boolean} Whether to clear all tabs
+   * @returns {boolean} 是否清除所有标签页
    */
   function checkTabClear(): boolean {
     if (!userInfo.userId) {
@@ -76,7 +76,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
     const lastLoginUserId = localStg.get('lastLoginUserId');
 
-    // Clear all tabs if current user is different from previous user
+    // 如果当前用户与上一次用户不同，清除所有标签页
     if (!lastLoginUserId || lastLoginUserId !== userInfo.userId) {
       localStg.remove('globalTabs');
       tabStore.clearTabs();
@@ -90,11 +90,11 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   }
 
   /**
-   * Login
+   * 登录
    *
-   * @param userName User name
-   * @param password Password
-   * @param [redirect=true] Whether to redirect after login. Default is `true`
+   * @param userName 用户名
+   * @param password 密码
+   * @param [redirect=true] 登录后是否重定向，默认为 `true`
    */
   async function login(userName: string, password: string, redirect = true) {
     startLoading();
@@ -105,12 +105,12 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
       const pass = await loginByToken(loginToken);
 
       if (pass) {
-        // Check if the tab needs to be cleared
+        // 检查是否需要清除标签页
         const isClear = checkTabClear();
         let needRedirect = redirect;
 
         if (isClear) {
-          // If the tab needs to be cleared,it means we don't need to redirect.
+          // 如果需要清除标签页，则不需要重定向
           needRedirect = false;
         }
         await redirectFromLogin(needRedirect);
@@ -129,11 +129,11 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
   }
 
   async function loginByToken(loginToken: Api.Auth.LoginToken) {
-    // 1. stored in the localStorage, the later requests need it in headers
+    // 1. 存储在 localStorage 中，后续请求需要在请求头中使用
     localStg.set('token', loginToken.token);
     localStg.set('refreshToken', loginToken.refreshToken);
 
-    // 2. get user info
+    // 2. 获取用户信息
     const pass = await getUserInfo();
 
     if (pass) {
@@ -149,7 +149,7 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
     const { data: info, error } = await fetchGetUserInfo();
 
     if (!error) {
-      // update store
+      // 更新 store
       Object.assign(userInfo, info);
 
       return true;

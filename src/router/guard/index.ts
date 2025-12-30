@@ -4,9 +4,9 @@ import { createProgressGuard } from './progress';
 import { createDocumentTitleGuard } from './title';
 
 /**
- * Router guard
+ * 路由守卫
  *
- * @param router - Router instance
+ * @param router - 路由实例
  */
 export function createRouterGuard(router: Router) {
   createProgressGuard(router);

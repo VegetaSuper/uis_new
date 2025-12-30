@@ -1,8 +1,8 @@
 declare namespace Api {
   /**
-   * namespace Route
+   * 命名空间 Route
    *
-   * backend api module: "route"
+   * 后端 API 模块: "route"
    */
   namespace Route {
     type ElegantConstRoute = import('@elegant-router/types').ElegantConstRoute;

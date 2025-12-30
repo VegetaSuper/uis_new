@@ -8,7 +8,7 @@ defineOptions({ name: 'BetterScroll' });
 
 interface Props {
   /**
-   * BetterScroll options
+   * BetterScroll 选项
    *
    * @link https://better-scroll.github.io/docs/zh-CN/guide/base-scroll-options.html
    */
@@ -30,7 +30,7 @@ function initBetterScroll() {
   instance.value = new BScroll(bsWrapper.value, props.options);
 }
 
-// refresh BS when scroll element size changed
+// 当滚动元素尺寸改变时刷新 BetterScroll
 watch([() => wrapWidth.value, () => width.value, () => height.value], () => {
   instance.value?.refresh();
 });

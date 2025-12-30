@@ -166,7 +166,7 @@ function removeFocus() {
   (document.activeElement as HTMLElement)?.blur();
 }
 
-// watch
+// 监听
 watch(
   () => route.fullPath,
   () => {
@@ -180,7 +180,7 @@ watch(
   }
 );
 
-// init
+// 初始化
 init();
 </script>
 

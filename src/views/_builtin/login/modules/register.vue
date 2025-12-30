@@ -40,7 +40,7 @@ const rules = computed<Record<keyof FormModel, App.Global.FormRule[]>>(() => {
 
 async function handleSubmit() {
   await validate();
-  // request to register
+  // 请求注册
   window.$message?.success($t('page.login.common.validateSuccess'));
 }
 </script>

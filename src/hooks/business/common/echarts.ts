@@ -75,10 +75,10 @@ interface ChartHooks {
 }
 
 /**
- * use echarts
+ * 使用 echarts
  *
- * @param optionsFactory echarts options factory function
- * @param darkMode dark mode
+ * @param optionsFactory echarts 选项工厂函数
+ * @param darkMode 暗色模式
  */
 export function useEcharts<T extends ECOption>(optionsFactory: () => T, hooks: ChartHooks = {}) {
   const scope = effectScope();
@@ -111,15 +111,15 @@ export function useEcharts<T extends ECOption>(optionsFactory: () => T, hooks: C
     onDestroy
   } = hooks;
 
-  /** is chart rendered */
+  /** 图表是否已渲染 */
   function isRendered() {
     return Boolean(domRef.value && chart.value);
   }
 
   /**
-   * update chart options
+   * 更新图表选项
    *
-   * @param callback callback function
+   * @param callback 回调函数
    */
   async function updateOptions(callback: (opts: T, optsFactory: () => T) => ECOption = () => chartOptions) {
     const updatedOpts = callback(chartOptions, optionsFactory);
@@ -143,7 +143,7 @@ export function useEcharts<T extends ECOption>(optionsFactory: () => T, hooks: C
     chart.value?.setOption(options);
   }
 
-  /** render chart */
+  /** 渲染图表 */
   async function render() {
     if (isRendered()) return;
 
@@ -156,12 +156,12 @@ export function useEcharts<T extends ECOption>(optionsFactory: () => T, hooks: C
     await onRender?.(chart.value!);
   }
 
-  /** resize chart */
+  /** 调整图表大小 */
   function resize() {
     chart.value?.resize();
   }
 
-  /** destroy chart */
+  /** 销毁图表 */
   async function destroy() {
     if (!chart.value) return;
 
@@ -170,7 +170,7 @@ export function useEcharts<T extends ECOption>(optionsFactory: () => T, hooks: C
     chart.value = null;
   }
 
-  /** change chart theme */
+  /** 更改图表主题 */
   async function changeTheme() {
     await destroy();
     await render();
@@ -178,23 +178,23 @@ export function useEcharts<T extends ECOption>(optionsFactory: () => T, hooks: C
   }
 
   /**
-   * render chart by size
+   * 根据尺寸渲染图表
    *
-   * @param w width
-   * @param h height
+   * @param w 宽度
+   * @param h 高度
    */
   async function renderChartBySize(w: number, h: number) {
     initialSize.width = w;
     initialSize.height = h;
 
-    // resize chart
+    // 调整图表大小
     if (isRendered()) {
       resize();
 
       return;
     }
 
-    // render chart
+    // 渲染图表
     await render();
 
     if (chart.value) {

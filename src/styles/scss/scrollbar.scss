@@ -2,9 +2,9 @@
   scrollbar-width: thin;
   scrollbar-color: $color transparent;
 
-  // Dark theme override
+  // 暗色主题覆盖
   .dark & {
-    // guide safari use light color scrollbar
+    // 引导 Safari 使用浅色滚动条
     color-scheme: dark;
     scrollbar-color: $dark-color transparent;
   }
