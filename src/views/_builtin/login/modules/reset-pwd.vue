@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive } from 'vue';
-import { useRouterPush } from '@/hooks/common/router';
-import { useFormRules, useNaiveForm } from '@/hooks/common/form';
+import { useRouterPush } from '@/hooks/business/common/router';
+import { useFormRules, useNaiveForm } from '@/hooks/business/common/form';
 import { $t } from '@/locales';
 
 defineOptions({

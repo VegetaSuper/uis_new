@@ -4,7 +4,7 @@ import { useContext } from '@sa/hooks';
 import type { RouteKey } from '@elegant-router/types';
 import { useRouteStore } from '@/store/modules/route';
 import { useThemeStore } from '@/store/modules/theme';
-import { useRouterPush } from '@/hooks/common/router';
+import { useRouterPush } from '@/hooks/business/common/router';
 
 export const [provideMixMenuContext, useMixMenuContext] = useContext('MixMenu', useMixMenu);
 

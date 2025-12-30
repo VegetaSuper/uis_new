@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import type { VNode } from 'vue';
 import { useTabStore } from '@/store/modules/tab';
-import { useSvgIcon } from '@/hooks/common/icon';
+import { useSvgIcon } from '@/hooks/business/common/icon';
 import { $t } from '@/locales';
 
 defineOptions({

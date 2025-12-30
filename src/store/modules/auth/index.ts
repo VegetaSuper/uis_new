@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router';
 import { defineStore } from 'pinia';
 import { useLoading } from '@sa/hooks';
 import { fetchGetUserInfo, fetchLogin } from '@/service/api';
-import { useRouterPush } from '@/hooks/common/router';
+import { useRouterPush } from '@/hooks/business/common/router';
 import { localStg } from '@/utils/storage';
 import { SetupStoreId } from '@/enum';
 import { $t } from '@/locales';

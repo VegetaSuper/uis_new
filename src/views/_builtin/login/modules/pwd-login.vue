@@ -2,8 +2,8 @@
 import { computed, reactive } from 'vue';
 import { loginModuleRecord } from '@/constants/app';
 import { useAuthStore } from '@/store/modules/auth';
-import { useRouterPush } from '@/hooks/common/router';
-import { useFormRules, useNaiveForm } from '@/hooks/common/form';
+import { useRouterPush } from '@/hooks/business/common/router';
+import { useFormRules, useNaiveForm } from '@/hooks/business/common/form';
 import { $t } from '@/locales';
 
 defineOptions({

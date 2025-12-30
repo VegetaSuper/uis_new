@@ -4,7 +4,7 @@ import { defineStore } from 'pinia';
 import type { RouteKey } from '@elegant-router/types';
 import { router } from '@/router';
 import { useRouteStore } from '@/store/modules/route';
-import { useRouterPush } from '@/hooks/common/router';
+import { useRouterPush } from '@/hooks/business/common/router';
 import { localStg } from '@/utils/storage';
 import { SetupStoreId } from '@/enum';
 import { useThemeStore } from '../theme';
