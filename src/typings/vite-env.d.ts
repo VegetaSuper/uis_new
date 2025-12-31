@@ -33,6 +33,10 @@ declare namespace Env {
      */
     readonly VITE_SERVICE_SUCCESS_CODE: string;
     /**
+     * 加密密钥
+     */
+    readonly VITE_APP_SECRET: string;
+    /**
      * 后端服务登出码
      *
      * 当收到此码时，用户将被登出并重定向到登录页
@@ -82,7 +86,7 @@ declare namespace Env {
      *
      * 仅在权限路由模式为静态时有效，如果路由模式为动态，首页路由 key 在后端定义
      */
-    readonly VITE_ROUTE_HOME: import('@elegant-router/types').LastLevelRouteKey;
+    readonly VITE_ROUTE_HOME: string;
     /**
      * 如果未设置菜单图标，则使用默认菜单图标
      *

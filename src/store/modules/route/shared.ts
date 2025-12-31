@@ -333,3 +333,73 @@ export function transformMenuToSearchMenus(menus: App.Global.Menu[], treeMap: Ap
     return acc;
   }, treeMap);
 }
+
+/**
+ * 将后端返回的菜单列表转换为树形结构
+ *
+ * @param list 后端返回的菜单列表
+ * @returns 树形菜单结构
+ */
+export function transformSystemMenuToTree(list: any[]): App.Global.Menu[] {
+  if (!list || !list.length) return [];
+
+  // 1. 过滤掉按钮 (type < 3)
+  const menuList = list.filter(item => item.type < 3);
+
+  // 2. 创建映射表
+  const map = new Map<number, App.Global.Menu>();
+  const roots: App.Global.Menu[] = [];
+
+  // 3. 第一次遍历：创建所有节点
+  menuList.forEach(item => {
+    console.log(item.router, item.routerId);
+
+    const menu: App.Global.Menu = {
+      key: item.routerId || String(item.id),
+      label: item.name,
+      routeKey: item.routerId,
+      routePath: item.router,
+      order: item.seq || 0
+    };
+
+    // 如果 hasChildren 为 true，初始化 children 数组
+    if (item.hasChildren) {
+      menu.children = [];
+    }
+
+    map.set(item.id, menu);
+  });
+
+  // 4. 第二次遍历：构建树形结构
+  menuList.forEach(item => {
+    const menu = map.get(item.id);
+    if (item.parentId === 0) {
+      roots.push(menu!);
+    } else {
+      const parent = map.get(item.parentId);
+      if (parent) {
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(menu!);
+      } else {
+        // 如果找不到父节点，作为根节点处理
+        roots.push(menu!);
+      }
+    }
+  });
+
+  // 5. 排序
+  const sortMenus = (menus: App.Global.Menu[]) => {
+    menus.sort((a, b) => (Number(a.order) || 0) - (Number(b.order) || 0));
+    menus.forEach(menu => {
+      if (menu.children?.length) {
+        sortMenus(menu.children);
+      }
+    });
+  };
+
+  sortMenus(roots);
+
+  return roots;
+}

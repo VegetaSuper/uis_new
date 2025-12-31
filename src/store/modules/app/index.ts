@@ -49,16 +49,16 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
     routeStore.resetRouteCache();
   }
 
-  const locale = ref<App.I18n.LangType>(localStg.get('lang') || 'zh-CN');
+  const locale = ref<App.I18n.LangType>(localStg.get('lang') || 'zh-cn');
 
   const localeOptions: App.I18n.LangOption[] = [
     {
       label: '中文',
-      key: 'zh-CN'
+      key: 'zh-cn'
     },
     {
       label: 'English',
-      key: 'en-US'
+      key: 'en'
     }
   ];
 
@@ -117,10 +117,6 @@ export const useAppStore = defineStore(SetupStoreId.App, () => {
     watch(locale, () => {
       // 根据语言环境更新文档标题
       updateDocumentTitleByLocale();
-
-      // 根据语言环境更新全局菜单
-      routeStore.updateGlobalMenusByLocale();
-
       // 根据语言环境更新标签页
       tabStore.updateTabsByLocale();
 

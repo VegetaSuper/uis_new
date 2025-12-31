@@ -1,6 +1,6 @@
 const local: App.I18n.Schema = {
   system: {
-    title: 'UIS · 统一数字化管理系统',
+    title: 'BESTWIN UIS',
     updateTitle: '系统版本更新通知',
     updateContent: '检测到系统有新版本发布，是否立即刷新页面？',
     updateConfirm: '立即刷新',
@@ -225,16 +225,18 @@ const local: App.I18n.Schema = {
     404: '页面不存在',
     500: '服务器错误',
     'iframe-page': '外链页面',
-    home: '首页'
+    home: '首页',
+    personal: '个人中心',
+    personal_mymessage: '消息中心'
   },
   page: {
     login: {
       common: {
         loginOrRegister: '登录 / 注册',
-        userNamePlaceholder: '请输入用户名',
+        userNamePlaceholder: '账号',
         phonePlaceholder: '请输入手机号',
         codePlaceholder: '请输入验证码',
-        passwordPlaceholder: '请输入密码',
+        passwordPlaceholder: '密码',
         confirmPasswordPlaceholder: '请再次输入密码',
         codeLogin: '验证码登录',
         confirm: '确定',
@@ -244,8 +246,9 @@ const local: App.I18n.Schema = {
         welcomeBack: '欢迎回来，{userName} ！'
       },
       pwdLogin: {
-        title: '密码登录',
-        rememberMe: '记住我',
+        title: '请输入您的账号和密码',
+        remember: '记住密码',
+        cockpit: '进入系统',
         forgetPassword: '忘记密码？',
         register: '注册账号',
         otherAccountLogin: '其他账号登录',
@@ -305,8 +308,8 @@ const local: App.I18n.Schema = {
   form: {
     required: '不能为空',
     userName: {
-      required: '请输入用户名',
-      invalid: '用户名格式不正确'
+      required: '请输入账号',
+      invalid: '账号格式不正确'
     },
     phone: {
       required: '请输入手机号',

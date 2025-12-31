@@ -15,12 +15,11 @@ import {
   filterAuthRoutesByRoles,
   getBreadcrumbsByRoute,
   getCacheRouteNames,
-  getGlobalMenusByAuthRoutes,
   getSelectedMenuKeyPathByKey,
   isRouteExistByRouteName,
   sortRoutesByOrder,
   transformMenuToSearchMenus,
-  updateLocaleOfGlobalMenus
+  transformSystemMenuToTree
 } from './shared';
 
 export const useRouteStore = defineStore(SetupStoreId.Route, () => {
@@ -60,6 +59,7 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
     });
 
     constantRoutes.value = Array.from(constantRoutesMap.values());
+    console.log('addConstantRoutes', constantRoutes.value);
   }
 
   /** 权限路由 */
@@ -78,18 +78,8 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
   const removeRouteFns: (() => void)[] = [];
 
   /** 全局菜单 */
-  const menus = ref<App.Global.Menu[]>([]);
+  const menus = computed(() => transformSystemMenuToTree(authStore.userInfo.systemMenuDtoList));
   const searchMenus = computed(() => transformMenuToSearchMenus(menus.value));
-
-  /** 获取全局菜单 */
-  function getGlobalMenus(routes: ElegantConstRoute[]) {
-    menus.value = getGlobalMenusByAuthRoutes(routes);
-  }
-
-  /** 根据语言环境更新全局菜单 */
-  function updateGlobalMenusByLocale() {
-    menus.value = updateLocaleOfGlobalMenus(menus.value);
-  }
 
   /** 缓存路由 */
   const cacheRoutes = ref<RouteKey[]>([]);
@@ -175,11 +165,6 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
 
   /** 初始化权限路由 */
   async function initAuthRoute() {
-    // 检查用户信息是否已初始化
-    if (!authStore.userInfo.userId) {
-      await authStore.initUserInfo();
-    }
-
     if (authRouteMode.value === 'static') {
       initStaticAuthRoute();
     } else {
@@ -239,8 +224,6 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
     resetVueRoutes();
 
     addRoutesToVueRouter(vueRoutes);
-
-    getGlobalMenus(sortRoutes);
 
     getCacheRoutes(vueRoutes);
   }
@@ -329,7 +312,6 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
     routeHome,
     menus,
     searchMenus,
-    updateGlobalMenusByLocale,
     cacheRoutes,
     excludeCacheRoutes,
     resetRouteCache,

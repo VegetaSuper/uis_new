@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, reactive } from 'vue';
+import { computed, onMounted, reactive } from 'vue';
 import { useAuthStore } from '@/store/modules/auth';
-import { useRouterPush } from '@/hooks/business/common/router';
 import { useFormRules, useNaiveForm } from '@/hooks/business/common/form';
+import { localStg } from '@/utils/storage';
 import { $t } from '@/locales';
 
 defineOptions({
@@ -10,20 +10,16 @@ defineOptions({
 });
 
 const authStore = useAuthStore();
-const { toggleLoginModule } = useRouterPush();
 const { formRef, validate } = useNaiveForm();
 
-interface FormModel {
-  userName: string;
-  password: string;
-}
-
-const model: FormModel = reactive({
+const model: Form.Auth.Model = reactive({
   userName: '',
-  password: ''
+  password: '',
+  remember: false,
+  cockpit: true
 });
 
-const rules = computed<Record<keyof FormModel, App.Global.FormRule[]>>(() => {
+const rules = computed<Partial<Record<keyof Form.Auth.Model, App.Global.FormRule[]>>>(() => {
   // 在 computed 中定义以使 locale 具有响应性，如果不使用 i18n，可以不使用 computed
   const { formRules } = useFormRules();
 
@@ -33,9 +29,16 @@ const rules = computed<Record<keyof FormModel, App.Global.FormRule[]>>(() => {
   };
 });
 
+onMounted(() => {
+  const loginInfo = localStg.get('loginInfo');
+  if (loginInfo) {
+    Object.assign(model, loginInfo);
+  }
+});
+
 async function handleSubmit() {
   await validate();
-  await authStore.login(model.userName, model.password);
+  await authStore.login(model);
 }
 </script>
 
@@ -53,13 +56,11 @@ async function handleSubmit() {
       />
     </NFormItem>
     <NSpace vertical :size="24">
-      <div class="flex-y-center justify-between">
-        <NCheckbox>{{ $t('page.login.pwdLogin.rememberMe') }}</NCheckbox>
-        <NButton quaternary @click="toggleLoginModule('reset-pwd')">
-          {{ $t('page.login.pwdLogin.forgetPassword') }}
-        </NButton>
+      <div class="flex-y-center gap-10px">
+        <NCheckbox v-model:checked="model.remember">{{ $t('page.login.pwdLogin.remember') }}</NCheckbox>
+        <NCheckbox v-model:checked="model.cockpit">{{ $t('page.login.pwdLogin.cockpit') }}</NCheckbox>
       </div>
-      <NButton type="primary" size="large" round block :loading="authStore.loginLoading" @click="handleSubmit">
+      <NButton type="primary" size="large" block :loading="authStore.loginLoading" @click="handleSubmit">
         {{ $t('common.login') }}
       </NButton>
     </NSpace>

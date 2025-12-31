@@ -5,16 +5,19 @@ declare namespace Api {
    * 后端 API 模块: "auth"
    */
   namespace Auth {
-    interface LoginToken {
-      token: string;
-      refreshToken: string;
-    }
-
     interface UserInfo {
-      userId: string;
-      userName: string;
+      id: string;
+      name: string;
       roles: string[];
       buttons: string[];
+      token: string;
+      [key: string]: any;
+    }
+
+    interface LogoutReq {
+      loginName: string;
+      token: string;
+      userId: string;
     }
   }
 }

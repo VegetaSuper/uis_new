@@ -83,6 +83,17 @@ export type MappedType<R extends ResponseType, JsonType = any> = R extends keyof
 
 export type CustomAxiosRequestConfig<R extends ResponseType = 'json'> = Omit<AxiosRequestConfig, 'responseType'> & {
   responseType?: R;
+  /**
+   * Whether to encrypt the request data
+   */
+  isEncrypt?: boolean;
+  /**
+   * Custom encryption keys (e.g., longitude, latitude)
+   */
+  cryptoKeys?: {
+    longitude: string;
+    latitude: string;
+  };
 };
 
 export interface RequestInstanceCommon<State extends Record<string, unknown>> {

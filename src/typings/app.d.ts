@@ -226,6 +226,8 @@ declare namespace App {
       icon?: () => VNode;
       /** 菜单子项 */
       children?: Menu[];
+      /** 菜单排序 */
+      order?: number;
     };
 
     type Breadcrumb = Omit<Menu, 'children'> & {
@@ -293,7 +295,7 @@ declare namespace App {
   namespace I18n {
     type RouteKey = import('@elegant-router/types').RouteKey;
 
-    type LangType = 'en-US' | 'zh-CN';
+    type LangType = 'en' | 'zh-cn';
 
     type LangOption = {
       label: string;
@@ -495,7 +497,8 @@ declare namespace App {
           };
           pwdLogin: {
             title: string;
-            rememberMe: string;
+            remember: string;
+            cockpit: string;
             forgetPassword: string;
             register: string;
             otherAccountLogin: string;

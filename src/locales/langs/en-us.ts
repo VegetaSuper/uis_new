@@ -27,6 +27,7 @@ const local: App.I18n.Schema = {
     error: 'Error',
     index: 'Index',
     keywordSearch: 'Please enter keyword',
+    login: 'Login',
     logout: 'Logout',
     logoutConfirm: 'Are you sure you want to log out?',
     lookForward: 'Coming soon',
@@ -234,10 +235,10 @@ const local: App.I18n.Schema = {
     login: {
       common: {
         loginOrRegister: 'Login / Register',
-        userNamePlaceholder: 'Please enter user name',
+        userNamePlaceholder: 'Account',
         phonePlaceholder: 'Please enter phone number',
         codePlaceholder: 'Please enter verification code',
-        passwordPlaceholder: 'Please enter password',
+        passwordPlaceholder: 'Password',
         confirmPasswordPlaceholder: 'Please enter password again',
         codeLogin: 'Verification code login',
         confirm: 'Confirm',
@@ -247,8 +248,9 @@ const local: App.I18n.Schema = {
         welcomeBack: 'Welcome back, {userName} !'
       },
       pwdLogin: {
-        title: 'Password Login',
-        rememberMe: 'Remember me',
+        title: 'Please enter your account and password',
+        remember: 'Remember me',
+        cockpit: 'Get into the system',
         forgetPassword: 'Forget password?',
         register: 'Register',
         otherAccountLogin: 'Other Account Login',

@@ -1,110 +1,166 @@
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive } from 'vue';
 import { useRoute } from 'vue-router';
 import { defineStore } from 'pinia';
 import { useLoading } from '@sa/hooks';
-import { fetchGetUserInfo, fetchLogin } from '@/service/api';
+import { md5 } from 'js-md5';
+import { fetchLogin, fetchLogout } from '@/service/api';
 import { useRouterPush } from '@/hooks/business/common/router';
-import { localStg } from '@/utils/storage';
+import { localStg, storagePrefix } from '@/utils/storage';
 import { SetupStoreId } from '@/enum';
 import { $t } from '@/locales';
 import { useRouteStore } from '../route';
 import { useTabStore } from '../tab';
-import { clearAuthStorage, getToken } from './shared';
+import { useAppStore } from '../app';
 
-export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
-  const route = useRoute();
-  const authStore = useAuthStore();
-  const routeStore = useRouteStore();
-  const tabStore = useTabStore();
-  const { toLogin, redirectFromLogin } = useRouterPush(false);
-  const { loading: loginLoading, startLoading, endLoading } = useLoading();
+export const useAuthStore = defineStore(
+  SetupStoreId.Auth,
+  () => {
+    const route = useRoute();
+    const authStore = useAuthStore();
+    const routeStore = useRouteStore();
+    const tabStore = useTabStore();
+    const { toLogin, redirectFromLogin } = useRouterPush(false);
+    const { loading: loginLoading, startLoading, endLoading } = useLoading();
 
-  const token = ref(getToken());
+    const userInfo: Api.Auth.UserInfo = reactive({
+      id: '',
+      token: '',
+      name: '',
+      roles: [],
+      buttons: [],
+      systemMenuDtoList: []
+    });
 
-  const userInfo: Api.Auth.UserInfo = reactive({
-    userId: '',
-    userName: '',
-    roles: [],
-    buttons: []
-  });
+    // 是否展示修改密码弹窗，初始密码用户
+    const showResetPassword = computed(() => {
+      return userInfo?.userConfigDto?.resetPassword;
+    });
 
-  /** is super role in static route */
-  const isStaticSuper = computed(() => {
-    const { VITE_AUTH_ROUTE_MODE, VITE_STATIC_SUPER_ROLE } = import.meta.env;
+    // 用户权限
+    const userPermission = computed(() => {
+      return userInfo.permission;
+    });
+    const userPermissionField = computed(() => {
+      return userInfo.permissionField;
+    });
 
-    return VITE_AUTH_ROUTE_MODE === 'static' && userInfo.roles.includes(VITE_STATIC_SUPER_ROLE);
-  });
+    /** is super role in static route */
+    const isStaticSuper = computed(() => {
+      const { VITE_AUTH_ROUTE_MODE, VITE_STATIC_SUPER_ROLE } = import.meta.env;
 
-  /** Is login */
-  const isLogin = computed(() => Boolean(token.value));
+      return VITE_AUTH_ROUTE_MODE === 'static' && userInfo.roles.includes(VITE_STATIC_SUPER_ROLE);
+    });
 
-  /** Reset auth store */
-  async function resetStore() {
-    recordUserId();
+    /** Is login */
+    const isLogin = computed(() => Boolean(userInfo.token));
 
-    clearAuthStorage();
+    /** Reset auth store */
+    async function resetStore() {
+      recordUserId();
+      // 退出登录
+      await fetchLogout({
+        loginName: userInfo.loginName,
+        token: userInfo.token,
+        userId: userInfo.id
+      });
 
-    authStore.$reset();
+      authStore.$reset();
 
-    if (!route.meta.constant) {
-      await toLogin();
+      if (route.meta.needLogin) {
+        await toLogin();
+      }
+
+      tabStore.cacheTabs();
+      routeStore.resetStore();
     }
 
-    tabStore.cacheTabs();
-    routeStore.resetStore();
-  }
+    /** 记录上一次登录会话的用户 ID，用于与下次登录时的当前用户 ID 进行比较 */
+    function recordUserId() {
+      if (!userInfo.id) {
+        return;
+      }
 
-  /** 记录上一次登录会话的用户 ID，用于与下次登录时的当前用户 ID 进行比较 */
-  function recordUserId() {
-    if (!userInfo.userId) {
-      return;
+      // 在本地存储当前用户 ID，用于下次登录时比较
+      localStg.set('lastLoginUserId', userInfo.id);
     }
 
-    // 在本地存储当前用户 ID，用于下次登录时比较
-    localStg.set('lastLoginUserId', userInfo.userId);
-  }
+    /**
+     * 检查当前登录用户是否与上一次登录用户不同，如果不同，清除所有标签页
+     *
+     * @returns {boolean} 是否清除所有标签页
+     */
+    function checkTabClear(): boolean {
+      if (!userInfo.id) {
+        return false;
+      }
 
-  /**
-   * 检查当前登录用户是否与上一次登录用户不同，如果不同，清除所有标签页
-   *
-   * @returns {boolean} 是否清除所有标签页
-   */
-  function checkTabClear(): boolean {
-    if (!userInfo.userId) {
+      const lastLoginUserId = localStg.get('lastLoginUserId');
+
+      // 如果当前用户与上一次用户不同，清除所有标签页
+      if (!lastLoginUserId || lastLoginUserId !== userInfo.id) {
+        localStg.remove('globalTabs');
+        tabStore.clearTabs();
+
+        localStg.remove('lastLoginUserId');
+        return true;
+      }
+
+      localStg.remove('lastLoginUserId');
       return false;
     }
 
-    const lastLoginUserId = localStg.get('lastLoginUserId');
+    /**
+     * 登录
+     *
+     * @param params 登录参数对象
+     * @param [redirect=true] 登录后是否重定向，默认为 `true`
+     */
+    async function login(params: Form.Auth.Model, redirect = true) {
+      const appStore = useAppStore();
 
-    // 如果当前用户与上一次用户不同，清除所有标签页
-    if (!lastLoginUserId || lastLoginUserId !== userInfo.userId) {
-      localStg.remove('globalTabs');
-      tabStore.clearTabs();
+      startLoading();
+      // 格式化登录参数
+      const query: Form.Auth.RealModel = {
+        loginName: params.userName,
+        leagueHi: md5(params.password),
+        cockpit: params.cockpit,
+        remember: params.remember,
+        locale: appStore.locale,
+        userConfigDto: {
+          locale: appStore.locale
+        }
+      };
 
-      localStg.remove('lastLoginUserId');
-      return true;
-    }
+      const times = 7 * 24 * 60 * 60 * 1000;
 
-    localStg.remove('lastLoginUserId');
-    return false;
-  }
+      if (params.remember) {
+        localStg.set(
+          'loginInfo',
+          {
+            userName: query.loginName,
+            password: params.password,
+            remember: true
+          },
+          times
+        );
+      } else {
+        localStg.set(
+          'loginInfo',
+          {
+            userName: query.loginName
+          },
+          times
+        );
+      }
 
-  /**
-   * 登录
-   *
-   * @param userName 用户名
-   * @param password 密码
-   * @param [redirect=true] 登录后是否重定向，默认为 `true`
-   */
-  async function login(userName: string, password: string, redirect = true) {
-    startLoading();
+      const { data, error } = await fetchLogin(query);
 
-    const { data: loginToken, error } = await fetchLogin(userName, password);
+      if (!error) {
+        if (data && data.readableFileType) {
+          data.readableFileType += ',jfif';
+        }
+        Object.assign(userInfo, data);
 
-    if (!error) {
-      const pass = await loginByToken(loginToken);
-
-      if (pass) {
         // 检查是否需要清除标签页
         const isClear = checkTabClear();
         let needRedirect = redirect;
@@ -117,67 +173,33 @@ export const useAuthStore = defineStore(SetupStoreId.Auth, () => {
 
         window.$notification?.success({
           title: $t('page.login.common.loginSuccess'),
-          content: $t('page.login.common.welcomeBack', { userName: userInfo.userName }),
+          content: $t('page.login.common.welcomeBack', {
+            userName: userInfo.name
+          }),
           duration: 4500
         });
       }
-    } else {
-      resetStore();
+
+      endLoading();
     }
 
-    endLoading();
-  }
-
-  async function loginByToken(loginToken: Api.Auth.LoginToken) {
-    // 1. 存储在 localStorage 中，后续请求需要在请求头中使用
-    localStg.set('token', loginToken.token);
-    localStg.set('refreshToken', loginToken.refreshToken);
-
-    // 2. 获取用户信息
-    const pass = await getUserInfo();
-
-    if (pass) {
-      token.value = loginToken.token;
-
-      return true;
-    }
-
-    return false;
-  }
-
-  async function getUserInfo() {
-    const { data: info, error } = await fetchGetUserInfo();
-
-    if (!error) {
-      // 更新 store
-      Object.assign(userInfo, info);
-
-      return true;
-    }
-
-    return false;
-  }
-
-  async function initUserInfo() {
-    const hasToken = getToken();
-
-    if (hasToken) {
-      const pass = await getUserInfo();
-
-      if (!pass) {
-        resetStore();
-      }
+    return {
+      userInfo,
+      isStaticSuper,
+      isLogin,
+      loginLoading,
+      resetStore,
+      login,
+      showResetPassword,
+      userPermission,
+      userPermissionField
+    };
+  },
+  {
+    persist: {
+      key: `${storagePrefix}auth-store`,
+      storage: sessionStorage,
+      pick: ['userInfo']
     }
   }
-
-  return {
-    token,
-    userInfo,
-    isStaticSuper,
-    isLogin,
-    loginLoading,
-    resetStore,
-    login,
-    initUserInfo
-  };
-});
+);

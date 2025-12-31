@@ -1,44 +1,88 @@
 import type { AxiosResponse } from 'axios';
-import { BACKEND_ERROR_CODE, createFlatRequest, createRequest } from '@sa/axios';
+import { BACKEND_ERROR_CODE, createFlatRequest } from '@sa/axios';
+import { md5 } from 'js-md5';
 import { useAuthStore } from '@/store/modules/auth';
-import { localStg } from '@/utils/storage';
+import { getToken } from '@/store/modules/auth/shared';
+import { Encrypt } from '@/utils/secret';
 import { getServiceBaseURL } from '@/utils/service';
 import { $t } from '@/locales';
-import { getAuthorization, handleExpiredRequest, showErrorMsg } from './shared';
+import { showErrorMsg } from './shared';
 import type { RequestInstanceState } from './type';
 
 const isHttpProxy = import.meta.env.DEV && import.meta.env.VITE_HTTP_PROXY === 'Y';
-const { baseURL, otherBaseURL } = getServiceBaseURL(import.meta.env, isHttpProxy);
+const { baseURL } = getServiceBaseURL(import.meta.env, isHttpProxy);
 
 export const request = createFlatRequest(
   {
-    baseURL,
-    headers: {
-      apifoxToken: 'XL299LiMEDZ0H5h3A29PxwQXdMJqWyY2'
-    }
+    baseURL
   },
   {
     defaultState: {
       errMsgStack: [],
-      refreshTokenPromise: null
+      refreshTokenPromise: null,
+      timeout: 600 * 1000,
+      isEncrypt: true
     } as RequestInstanceState,
     transform(response: AxiosResponse<App.Service.Response<any>>) {
-      return response.data.data;
+      return response.data.content;
     },
     async onRequest(config) {
-      const Authorization = getAuthorization();
-      Object.assign(config.headers, { Authorization });
+      const authStore = useAuthStore();
+
+      const token = getToken();
+      const { headers } = config;
+
+      // 补充旧项目的 headers 参数
+      const randomKey = new Date().getTime();
+      Object.assign(headers, {
+        token,
+        randomKey,
+        sign: md5(randomKey + authStore.userInfo?.loginName || ''),
+        locale: authStore.userInfo?.userConfigDto?.locale || 'zh-cn'
+      });
+
+      /**
+       * 动态设置超时时间
+       * 如果请求配置中没有设置 timeout，则使用 store 中的默认超时时间
+       */
+      if (config.timeout === undefined) {
+        config.timeout = request.state.timeout;
+      }
+
+      const isEncrypt = config.isEncrypt ?? request.state.isEncrypt;
+
+      if (isEncrypt) {
+        // 设置 secure 请求头
+        headers.secure = true;
+        headers['Access-Control-Allow-Origin-Type'] = '*';
+
+        if (config.data && !(config.data instanceof FormData)) {
+          const dataStr = JSON.stringify(config.data);
+          const { cryptoKeys } = config;
+
+          config.data = {
+            detail: Encrypt(dataStr, cryptoKeys?.longitude, cryptoKeys?.latitude)
+          };
+        }
+        if (config.params) {
+          const paramsStr = JSON.stringify(config.params);
+          const { cryptoKeys } = config;
+
+          config.params = {
+            detail: Encrypt(paramsStr, cryptoKeys?.longitude, cryptoKeys?.latitude)
+          };
+        }
+      }
 
       return config;
     },
     isBackendSuccess(response) {
-      // 当后端响应码为 "0000"（默认值）时，表示请求成功
-      // 如需自定义此逻辑，可在 `.env` 文件中修改 `VITE_SERVICE_SUCCESS_CODE`
-      return String(response.data.code) === import.meta.env.VITE_SERVICE_SUCCESS_CODE;
+      // 当后端响应 success 为 true 时，表示请求成功
+      return response.data.success === true;
     },
-    async onBackendFail(response, instance) {
+    async onBackendFail(response, _instance) {
       const authStore = useAuthStore();
-      const responseCode = String(response.data.code);
+      const responseCode = response.data.code ? String(response.data.code) : '';
 
       function handleLogout() {
         authStore.resetStore();
@@ -48,7 +92,8 @@ export const request = createFlatRequest(
         handleLogout();
         window.removeEventListener('beforeunload', handleLogout);
 
-        request.state.errMsgStack = request.state.errMsgStack.filter(msg => msg !== response.data.msg);
+        const errorMessage = response.data.message || '';
+        request.state.errMsgStack = request.state.errMsgStack.filter(msg => msg !== errorMessage);
       }
 
       // 当后端响应码在 `logoutCodes` 中时，表示用户将被登出并重定向到登录页
@@ -60,15 +105,16 @@ export const request = createFlatRequest(
 
       // 当后端响应码在 `modalLogoutCodes` 中时，表示将通过弹窗提示用户登出
       const modalLogoutCodes = import.meta.env.VITE_SERVICE_MODAL_LOGOUT_CODES?.split(',') || [];
-      if (modalLogoutCodes.includes(responseCode) && !request.state.errMsgStack?.includes(response.data.msg)) {
-        request.state.errMsgStack = [...(request.state.errMsgStack || []), response.data.msg];
+      const errorMessage = response.data.message || '';
+      if (modalLogoutCodes.includes(responseCode) && !request.state.errMsgStack?.includes(errorMessage)) {
+        request.state.errMsgStack = [...(request.state.errMsgStack || []), errorMessage];
 
         // 防止用户刷新页面
         window.addEventListener('beforeunload', handleLogout);
 
         window.$dialog?.error({
           title: $t('common.error'),
-          content: response.data.msg,
+          content: errorMessage,
           positiveText: $t('common.confirm'),
           maskClosable: false,
           closeOnEsc: false,
@@ -83,19 +129,6 @@ export const request = createFlatRequest(
         return null;
       }
 
-      // 当后端响应码在 `expiredTokenCodes` 中时，表示 token 已过期，需要刷新 token
-      // `refreshToken` 接口不能返回 `expiredTokenCodes` 中的错误码，否则会造成死循环，应返回 `logoutCodes` 或 `modalLogoutCodes`
-      const expiredTokenCodes = import.meta.env.VITE_SERVICE_EXPIRED_TOKEN_CODES?.split(',') || [];
-      if (expiredTokenCodes.includes(responseCode)) {
-        const success = await handleExpiredRequest(request.state);
-        if (success) {
-          const Authorization = getAuthorization();
-          Object.assign(response.config.headers, { Authorization });
-
-          return instance.request(response.config) as Promise<AxiosResponse>;
-        }
-      }
-
       return null;
     },
     onError(error) {
@@ -106,7 +139,7 @@ export const request = createFlatRequest(
 
       // 获取后端错误消息和错误码
       if (error.code === BACKEND_ERROR_CODE) {
-        message = error.response?.data?.msg || message;
+        message = error.response?.data?.message || message;
         backendErrorCode = String(error.response?.data?.code || '');
       }
 
@@ -116,55 +149,7 @@ export const request = createFlatRequest(
         return;
       }
 
-      // 当 token 过期时，会刷新 token 并重试请求，因此无需显示错误消息
-      const expiredTokenCodes = import.meta.env.VITE_SERVICE_EXPIRED_TOKEN_CODES?.split(',') || [];
-      if (expiredTokenCodes.includes(backendErrorCode)) {
-        return;
-      }
-
       showErrorMsg(request.state, message);
-    }
-  }
-);
-
-export const demoRequest = createRequest(
-  {
-    baseURL: otherBaseURL.demo
-  },
-  {
-    transform(response: AxiosResponse<App.Service.DemoResponse>) {
-      return response.data.result;
-    },
-    async onRequest(config) {
-      const { headers } = config;
-
-      // 设置 token
-      const token = localStg.get('token');
-      const Authorization = token ? `Bearer ${token}` : null;
-      Object.assign(headers, { Authorization });
-
-      return config;
-    },
-    isBackendSuccess(response) {
-      // 当后端响应码为 "200" 时，表示请求成功
-      // 你可以自行修改此逻辑
-      return response.data.status === '200';
-    },
-    async onBackendFail(_response) {
-      // 当后端响应码不是 "200" 时，表示请求失败
-      // 例如：token 过期，刷新 token 并重试请求
-    },
-    onError(error) {
-      // 当请求失败时，可以显示错误消息
-
-      let message = error.message;
-
-      // 显示后端错误消息
-      if (error.code === BACKEND_ERROR_CODE) {
-        message = error.response?.data?.message || message;
-      }
-
-      window.$message?.error(message);
     }
   }
 );

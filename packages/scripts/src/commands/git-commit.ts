@@ -16,7 +16,7 @@ interface PromptObject {
  *
  * @param lang
  */
-export async function gitCommit(lang: Lang = 'en-us') {
+export async function gitCommit(lang: Lang = 'en') {
   const { gitCommitMessages, gitCommitTypes, gitCommitScopes } = locales[lang];
 
   const typesChoices = gitCommitTypes.map(([value, msg]) => {
@@ -65,7 +65,7 @@ export async function gitCommit(lang: Lang = 'en-us') {
 }
 
 /** Git commit message verify */
-export async function gitCommitVerify(lang: Lang = 'en-us', ignores: RegExp[] = []) {
+export async function gitCommitVerify(lang: Lang = 'en', ignores: RegExp[] = []) {
   const gitPath = await execCommand('git', ['rev-parse', '--show-toplevel']);
 
   const gitMsgPath = path.join(gitPath, '.git', 'COMMIT_EDITMSG');

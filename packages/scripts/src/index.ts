@@ -29,7 +29,7 @@ interface CommandArg {
   /**
    * display lang of cli
    *
-   * @default 'en-us'
+   * @default 'en'
    */
   lang?: Lang;
 }
@@ -51,7 +51,7 @@ export async function setupCli() {
       '-c, --cleanupDir <dir>',
       'The glob pattern of dirs to cleanup, If not set, it will use the default value, Multiple values use "," to separate them'
     )
-    .option('-l, --lang <lang>', 'display lang of cli', { default: 'en-us', type: [String] })
+    .option('-l, --lang <lang>', 'display lang of cli', { default: 'en', type: [String] })
     .help();
 
   const commands: CommandWithAction<CommandArg> = {

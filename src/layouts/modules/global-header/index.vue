@@ -51,7 +51,7 @@ const { isFullscreen, toggle } = useFullscreen();
         :is-dark="themeStore.darkMode"
         @switch="themeStore.toggleThemeScheme"
       />
-      <ThemeButton />
+      <!-- <ThemeButton /> -->
       <UserAvatar />
     </div>
   </DarkModeContainer>

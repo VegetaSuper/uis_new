@@ -3,15 +3,15 @@ declare namespace StorageType {
   interface Session {
     /** 主题颜色 */
     themeColor: string;
-    // /**
-    //  * 主题设置
-    //  */
-    // themeSettings: App.Theme.ThemeSetting;
+    /** 查询条件 */
+    searchConditions: Record<string, any>;
   }
 
   interface Local {
     /** i18n 语言 */
     lang: App.I18n.LangType;
+    /** 登录信息 */
+    loginInfo: Record<string, any>;
     /** token */
     token: string;
     /** 混合菜单的固定侧边栏 */

@@ -34,9 +34,9 @@ export function useFormRules() {
   } satisfies Record<string, App.Global.FormRule>;
 
   const formRules = {
-    userName: [createRequiredRule($t('form.userName.required')), patternRules.userName],
+    userName: [createRequiredRule($t('form.userName.required'))],
     phone: [createRequiredRule($t('form.phone.required')), patternRules.phone],
-    pwd: [createRequiredRule($t('form.pwd.required')), patternRules.pwd],
+    pwd: [createRequiredRule($t('form.pwd.required'))],
     code: [createRequiredRule($t('form.code.required')), patternRules.code],
     email: [createRequiredRule($t('form.email.required')), patternRules.email]
   } satisfies Record<string, App.Global.FormRule[]>;

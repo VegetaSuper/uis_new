@@ -13,8 +13,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: '403',
       i18nKey: 'route.403',
-      constant: true,
-      hideInMenu: true
+      hideInMenu: true,
+      needLogin: false
     }
   },
   {
@@ -24,8 +24,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: '404',
       i18nKey: 'route.404',
-      constant: true,
-      hideInMenu: true
+      hideInMenu: true,
+      needLogin: false
     }
   },
   {
@@ -35,8 +35,8 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: '500',
       i18nKey: 'route.500',
-      constant: true,
-      hideInMenu: true
+      hideInMenu: true,
+      needLogin: false
     }
   },
   {
@@ -47,7 +47,8 @@ export const generatedRoutes: GeneratedRoute[] = [
       title: 'home',
       i18nKey: 'route.home',
       icon: 'mdi:monitor-dashboard',
-      order: 1
+      order: 1,
+      needLogin: true
     }
   },
   {
@@ -58,9 +59,9 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: 'iframe-page',
       i18nKey: 'route.iframe-page',
-      constant: true,
       hideInMenu: true,
-      keepAlive: true
+      keepAlive: true,
+      needLogin: true
     }
   },
   {
@@ -71,8 +72,40 @@ export const generatedRoutes: GeneratedRoute[] = [
     meta: {
       title: 'login',
       i18nKey: 'route.login',
-      constant: true,
-      hideInMenu: true
+      hideInMenu: true,
+      needLogin: false
     }
+  },
+  {
+    name: 'personal',
+    path: '/personal',
+    component: 'layout.base',
+    meta: {
+      title: 'personal',
+      i18nKey: 'route.personal',
+      needLogin: true
+    },
+    children: [
+      {
+        name: 'personal_approvaltask',
+        path: '/personal/approvaltask',
+        component: 'view.personal_approvaltask',
+        meta: {
+          title: 'personal_approvaltask',
+          i18nKey: 'route.personal_approvaltask',
+          needLogin: true
+        }
+      },
+      {
+        name: 'personal_mymessage',
+        path: '/personal/mymessage',
+        component: 'view.personal_mymessage',
+        meta: {
+          title: 'personal_mymessage',
+          i18nKey: 'route.personal_mymessage',
+          needLogin: true
+        }
+      }
+    ]
   }
 ];

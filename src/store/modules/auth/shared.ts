@@ -1,12 +1,7 @@
-import { localStg } from '@/utils/storage';
+import { useAuthStore } from './index';
 
 /** Get token */
 export function getToken() {
-  return localStg.get('token') || '';
-}
-
-/** Clear auth storage */
-export function clearAuthStorage() {
-  localStg.remove('token');
-  localStg.remove('refreshToken');
+  const authStore = useAuthStore();
+  return authStore.userInfo?.token || '';
 }
