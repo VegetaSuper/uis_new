@@ -352,8 +352,6 @@ export function transformSystemMenuToTree(list: any[]): App.Global.Menu[] {
 
   // 3. 第一次遍历：创建所有节点
   menuList.forEach(item => {
-    console.log(item.router, item.routerId);
-
     const menu: App.Global.Menu = {
       key: item.routerId || String(item.id),
       label: item.name,

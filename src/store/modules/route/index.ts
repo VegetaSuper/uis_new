@@ -9,6 +9,8 @@ import { SetupStoreId } from '@/enum';
 import { createStaticRoutes, getAuthVueRoutes } from '@/router/routes';
 import { ROOT_ROUTE } from '@/router/routes/builtin';
 import { getRouteName, getRoutePath } from '@/router/elegant/transform';
+import { generatedRoutes } from '@/router/elegant/routes';
+import authRouteMap from '@/router/routes/authRouteMap';
 import { useAuthStore } from '../auth';
 import { useTabStore } from '../tab';
 import {
@@ -59,7 +61,6 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
     });
 
     constantRoutes.value = Array.from(constantRoutesMap.values());
-    console.log('addConstantRoutes', constantRoutes.value);
   }
 
   /** 权限路由 */
@@ -307,6 +308,19 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
     // 不需要登录时的一些全局初始化逻辑
   }
 
+  /**
+   * 根据 authRouteMap 动态添加路由
+   * 从 generatedRoutes 中查找对应的路由并添加到路由系统中
+   */
+  function addDynamicRoutesFromAuthMap() {
+    console.log('generatedRoutes', generatedRoutes);
+
+    console.log('authRouteMap', authRouteMap);
+
+    // 更新路由
+    // handleConstantAndAuthRoutes();
+  }
+
   return {
     resetStore,
     routeHome,
@@ -324,6 +338,7 @@ export const useRouteStore = defineStore(SetupStoreId.Route, () => {
     getIsAuthRouteExist,
     getSelectedMenuKeyPath,
     onRouteSwitchWhenLoggedIn,
-    onRouteSwitchWhenNotLoggedIn
+    onRouteSwitchWhenNotLoggedIn,
+    addDynamicRoutesFromAuthMap
   };
 });

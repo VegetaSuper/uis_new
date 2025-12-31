@@ -14,7 +14,8 @@ export const generatedRoutes: GeneratedRoute[] = [
       title: '403',
       i18nKey: 'route.403',
       hideInMenu: true,
-      needLogin: false
+      needLogin: false,
+      constant: true
     }
   },
   {
@@ -25,7 +26,8 @@ export const generatedRoutes: GeneratedRoute[] = [
       title: '404',
       i18nKey: 'route.404',
       hideInMenu: true,
-      needLogin: false
+      needLogin: false,
+      constant: true
     }
   },
   {
@@ -36,7 +38,8 @@ export const generatedRoutes: GeneratedRoute[] = [
       title: '500',
       i18nKey: 'route.500',
       hideInMenu: true,
-      needLogin: false
+      needLogin: false,
+      constant: true
     }
   },
   {
@@ -73,7 +76,8 @@ export const generatedRoutes: GeneratedRoute[] = [
       title: 'login',
       i18nKey: 'route.login',
       hideInMenu: true,
-      needLogin: false
+      needLogin: false,
+      constant: true
     }
   },
   {

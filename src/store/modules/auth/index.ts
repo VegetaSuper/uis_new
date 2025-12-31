@@ -161,6 +161,9 @@ export const useAuthStore = defineStore(
         }
         Object.assign(userInfo, data);
 
+        // 动态添加 authRouteMap 中的路由
+        routeStore.addDynamicRoutesFromAuthMap();
+
         // 检查是否需要清除标签页
         const isClear = checkTabClear();
         let needRedirect = redirect;

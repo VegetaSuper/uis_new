@@ -101,8 +101,6 @@ export function useRouterPush(inSetup = true) {
     if (needRedirect && redirect) {
       await routerPush(redirect);
     } else {
-      console.log('go home', router.getRoutes());
-
       await toHome();
     }
   }
