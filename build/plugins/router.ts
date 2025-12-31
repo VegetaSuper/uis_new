@@ -9,18 +9,9 @@ export function setupElegantRouter() {
       blank: 'src/layouts/blank-layout/index.vue'
     },
     routeNameTransformer(routeName) {
-      // console.log('---routeNameTransformer---')
-      // console.log('routeName', routeName)
-      // console.log('---routeNameTransformer---')
-      return routeName
+      return routeName;
     },
     routePathTransformer(routeName, routePath) {
-      // console.log('---routePathTransformer---')
-      // console.log('routeName', routeName)
-      // console.log('routePath', routePath)
-
-      // console.log('---routePathTransformer---')
-
       const key = routeName as RouteKey;
 
       if (key === 'login') {
@@ -43,7 +34,9 @@ export function setupElegantRouter() {
         i18nKey: `route.${key}` as App.I18n.I18nKey
       };
 
-      meta.needLogin = !constantRoutes.includes(key);
+      if (constantRoutes.includes(key)) {
+        meta.constant = true;
+      }
 
       return meta;
     }

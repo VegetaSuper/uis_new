@@ -32,7 +32,7 @@ export function createRouteGuard(router: Router) {
     const noAuthorizationRoute: RouteKey = '403';
 
     const isLogin = Boolean(localStg.get('token'));
-    const needLogin = to.meta.needLogin;
+    const needLogin = !to.meta.constant;
     const routeRoles = to.meta.roles || [];
 
     const hasRole = authStore.userInfo.roles.some(role => routeRoles.includes(role));
@@ -43,22 +43,24 @@ export function createRouteGuard(router: Router) {
       next({ name: rootRoute });
       return;
     }
-    console.log('needLogin', needLogin);
-    console.log('isLogin', isLogin);
 
-    // 如果路由需要登录，并且未登录，则切换到登录页
-    if (needLogin && !isLogin) {
-      console.log(to);
+    // 如果路由不需要登录，则允许直接访问
+    if (!needLogin) {
+      handleRouteSwitch(to, from, next);
+      return;
+    }
 
+    // 路由需要登录但用户未登录，则切换到登录页
+    if (!isLogin) {
       next({ name: loginRoute, query: { redirect: to.fullPath } });
       return;
     }
 
     // 如果用户已登录但没有权限，则切换到 403 页面
-    // if (!hasAuth) {
-    //   next({ name: noAuthorizationRoute });
-    //   return;
-    // }
+    if (!hasAuth) {
+      next({ name: noAuthorizationRoute });
+      return;
+    }
 
     // 正常切换路由
     handleRouteSwitch(to, from, next);
@@ -97,7 +99,7 @@ async function initRoute(to: RouteLocationNormalized): Promise<RouteLocationRaw 
 
   if (!isLogin) {
     // 如果用户未登录且路由是常量路由但不是 "not-found" 路由，则允许访问
-    if (!to.meta.needLogin && !isNotFoundRoute) {
+    if (to.meta.constant && !isNotFoundRoute) {
       routeStore.onRouteSwitchWhenNotLoggedIn();
 
       return null;
