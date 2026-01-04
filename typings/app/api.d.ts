@@ -5,15 +5,16 @@ declare global {
     namespace Commom {
       type EnableStatus = 0 | 1
       interface PageResponse<T> {
-        current: number
+        page: number
         size: number
-        pages: number
         total: number
-        records: T[]
+        list: T[]
       }
       interface PageRequest {
-        current: number
+        page: number
         size: number
+        sortDtoList?: any[]
+        conditionDtoList?: any[]
         [key: string]: any
       }
     }

@@ -5,7 +5,7 @@ const userConfig: App.UserConfig = {
   headerHeight: 50,
   footerHeight: 46,
   tabHeight: 40,
-  gap: 5,
+  gap: 10,
   showTabs: true,
   showBreadcrumb: true,
   showFooter: false,
@@ -18,6 +18,6 @@ const userConfig: App.UserConfig = {
   showWaterMark: false,
 }
 
-export const bgColor = '#f8fafc'
+export const bgColor = '#fff'
 
 export { userConfig }

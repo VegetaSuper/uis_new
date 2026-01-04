@@ -1,8 +1,17 @@
 
 import { baseHttp } from '@/api/request'
 
-export function getMessageList(data?: any) {
-  return baseHttp.request<any>({
+export interface message {
+  [key: string]: any
+}
+
+/**
+ *
+ * @param data
+ * @returns
+ */
+export function getMessageList(data: Api.Commom.PageRequest) {
+  return baseHttp.request<Api.Commom.PageResponse<message>>({
     url: '/websocket/userMessage/list',
     method: 'post',
     data

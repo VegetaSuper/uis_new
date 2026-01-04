@@ -17,6 +17,11 @@ export function authLoginApi(data: Api.Auth.LoginParams) {
   })
 }
 
+/**
+ * 退出登录
+ * @param data
+ * @returns
+ */
 export function authLoginOutApi(data: Api.Auth.LogoutParams) {
   return baseHttp.request<boolean>({
     url: '/system/user/logout',
@@ -28,6 +33,11 @@ export function authLoginOutApi(data: Api.Auth.LogoutParams) {
   })
 }
 
+/**
+ * 修改密码
+ * @param data
+ * @returns
+ */
 export function authPasswordApi(data: Api.Auth.PasswordParams) {
   return baseHttp.request<boolean>({
     url: '/system/user/updatePassword',
