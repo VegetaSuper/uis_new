@@ -1,9 +1,11 @@
 import BaseHttpClient from '@rengar-admin/axios'
 import type { AxiosRequestConfig } from 'axios'
 import { useRouterHook } from '@/hooks/router'
-import { useAuthStore } from '@/stores'
+import { useAuthStore, useLanguageStore } from '@/stores'
 import router from '@/router'
 import { getServiceBaseUrl } from '@/utils/service'
+import { md5 } from 'js-md5'
+import { Encrypt } from '@/utils/secret'
 
 function showErrorMessage(message: string) {
   window.$message?.error?.(message)
@@ -17,9 +19,27 @@ class HttpClient extends BaseHttpClient {
   protected initializeRequestInterceptor(): number {
     return this.instance.interceptors.request.use(
       (config) => {
-        const authStore = useAuthStore()
-        if (authStore.user.token) {
-          config.headers.Authorization = `Bearer ${authStore.user.token}`
+        const { noSecret, noToken } = config.headers
+        const { user } = useAuthStore()
+
+        const { currentLanguage } = useLanguageStore()
+
+        // 设置请求头
+        config.headers.locale = currentLanguage
+
+        if (!noToken && user.token) {
+          config.headers.token = user.token
+          let randomKey = new Date().getTime();
+          config.headers.randomKey = randomKey
+          config.headers.sign = md5(randomKey + user.loginName); //设置签名
+        }
+
+
+        // 请求参数默认加密
+        if (!noSecret && config.method === 'post') {
+          let dataStr = JSON.stringify(config.data);
+          config.headers.secure = true;
+          config.data = { detail: Encrypt(dataStr, user.longitude, user.latitude) };
         }
         // ✅ 记录发起请求时的路由路径
         config.meta = config.meta || {}

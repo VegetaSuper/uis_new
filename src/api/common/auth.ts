@@ -10,6 +10,10 @@ export function authLoginApi(data: Api.Auth.LoginParams) {
     url: '/system/user/login',
     method: 'POST',
     data,
+    headers: {
+      noToken: true,
+      noSecret: true,
+    }
   })
 }
 
@@ -18,6 +22,9 @@ export function authLoginOutApi(data: Api.Auth.LogoutParams) {
     url: '/system/user/logout',
     method: 'post',
     data,
+    headers: {
+      noSecret: true,
+    }
   })
 }
 
