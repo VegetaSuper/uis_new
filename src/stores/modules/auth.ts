@@ -8,6 +8,7 @@ export const useAuthStore = defineStore(
       name: '',
       token: '',
       nameEn: '',
+      showResetPassword: null
     })
 
     const permissionStr = ref<string>('')
@@ -21,6 +22,8 @@ export const useAuthStore = defineStore(
       try {
         const data = await authLoginApi(params)
         user.value = data
+        user.value.showResetPassword = data?.userConfigDto?.resetPassword || null
+
         permissionStr.value = data.permission.split('-')
 
         return true

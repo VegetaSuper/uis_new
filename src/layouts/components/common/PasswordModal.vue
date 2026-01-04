@@ -1,84 +1,112 @@
 <template>
-  <NModal
-    v-model:show="show"
-    preset="dialog"
-    positive-text="确定"
-    negative-text="取消"
-    :loading
-    title="修改密码"
-    @positive-click="handleSubmit"
-  >
-    <NForm :model="formValue" :rules label-placement="left" ref="formRef" label-width="auto" class="py-8">
-      <NFormItem path="oldPassword" label="旧密码">
-        <NInput v-model:value="formValue.oldPassword" type="password" placeholder="请输入旧密码" />
-      </NFormItem>
-      <NFormItem path="newPassword" label="新密码">
-        <NInput v-model:value="formValue.newPassword" type="password" placeholder="请输入新密码" />
-      </NFormItem>
-      <NFormItem path="confirmPassword" label="确认密码">
-        <NInput v-model:value="formValue.confirmPassword" type="password" placeholder="请再次输入新密码" />
-      </NFormItem>
-    </NForm>
+  <NModal v-model:show="show" preset="dialog" positive-text="确定" negative-text="取消" :loading title="修改密码"
+    @positive-click="handleSubmit">
+    <NAlert v-if="!authStore.user.showResetPassword" :show-icon="false" :bordered="false">
+      新用户首次登录需要修改密码
+    </NAlert>
+    <BasicForm class="pt-4" @register="register">
+    </BasicForm>
   </NModal>
 </template>
 
 <script setup lang="ts">
 import { authPasswordApi } from '@/api/common/auth'
-import { useRouterHook } from '@/hooks/router'
 import { useLoading } from '@/hooks/loading'
 import { useAuthStore } from '@/stores'
-import type { FormInst, FormRules } from 'naive-ui'
+import { BasicForm, useForm } from 'naive-ui-form'
+import { md5 } from 'js-md5'
+
+const authStore = useAuthStore()
 
 const show = defineModel<boolean>('show', {
   required: true,
 })
 
-const rules: FormRules = {
-  oldPassword: {
-    required: true,
-    message: '请输入旧密码',
-    trigger: ['blur', 'input'],
-  },
-  newPassword: {
-    required: true,
-    message: '请输入新密码',
-    trigger: ['blur', 'input'],
-  },
-  confirmPassword: {
-    required: true,
-    validator: (_, value: string) => {
-      if (!value) {
-        return new Error('请再次输入新密码')
+const [register, { submit, getFieldValue }] = useForm({
+  schemas: [
+    {
+      field: 'oldPassword',
+      label: '旧密码',
+      type: 'input',
+      required: true,
+      requiredMessage: '请输入旧密码',
+      requiredTrigger: ['input', 'blur'],
+      componentProps: {
+        type: 'password',
+        "show-password-on": 'click',
+        clearable: true,
       }
-      if (value !== formValue.newPassword) {
-        return new Error('两次输入的密码不一致')
-      }
-      return true
     },
-    trigger: ['blur', 'input'],
-  },
-}
-
-const formValue = reactive({
-  oldPassword: '',
-  newPassword: '',
-  confirmPassword: '',
+    {
+      field: 'newPassword',
+      label: '新密码',
+      type: 'input',
+      componentProps: {
+        type: 'password',
+        "show-password-on": 'click',
+        clearable: true,
+      },
+      rules: {
+        required: true,
+        trigger: ['input', 'blur'],
+        validator: (_, value: string) => {
+          if (!value) {
+            return new Error('请输入新密码')
+          }
+          if (value === getFieldValue('oldPassword')) {
+            return new Error('新旧密码不能重复')
+          }
+          if (authStore.user?.userRole) {
+            const reg = new RegExp(authStore.user?.userRole)
+            if (!reg.test(value)) {
+              return new Error(authStore.user?.userRoleDetail)
+            }
+          }
+        }
+      }
+    },
+    {
+      field: 'confirmPassword',
+      label: '确认密码',
+      type: 'input',
+      componentProps: {
+        type: 'password',
+        "show-password-on": 'click',
+        clearable: true,
+      },
+      rules: {
+        required: true,
+        trigger: ['input', 'blur'],
+        validator: (_, value: string) => {
+          if (!value) {
+            return new Error('请再次输入新密码')
+          }
+          if (value !== getFieldValue('newPassword')) {
+            return new Error('两次输入的密码不一致')
+          }
+          return true
+        },
+      }
+    },
+  ],
+  showActionBtns: false,
 })
-const formRef = useTemplateRef<FormInst>('formRef')
 
 const { loading, startLoading, endLoading } = useLoading()
-const { routerReplaceToLogin } = useRouterHook()
-const authStore = useAuthStore()
 
-const router = useRouter()
 async function handleSubmit() {
   startLoading()
   try {
-    await formRef.value!.validate()
-    await authPasswordApi(toRaw(formValue))
-    window.$message.success('修改密码成功，请重新登录')
-    authStore.reset()
-    routerReplaceToLogin(router.currentRoute.value.fullPath)
+    const data = (await submit()) as Api.Auth.PasswordParams
+    console.log(data);
+    const query = {
+      oldPassword: md5(data.oldPassword),
+      newPassword: md5(data.newPassword),
+      id: authStore.user.id as number,
+      resetPassword: 1
+    }
+    await authPasswordApi(query)
+    window.$message.success('修改密码成功')
     return true
   } catch (error) {
     return false

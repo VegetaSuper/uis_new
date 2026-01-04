@@ -6,15 +6,6 @@
         <div class="text-3xl">{{ title }}</div>
       </div>
       <BasicForm @register="register">
-        <template #password="{ formValue, field }">
-          <NInput
-            v-model:value="formValue[field]"
-            type="password"
-            show-password-on="click"
-            clearable
-            placeholder="密码"
-          />
-        </template>
         <template #remember="{ formValue, field }">
           <NCheckbox v-model:checked="formValue[field]"> 记住密码 </NCheckbox>
         </template>

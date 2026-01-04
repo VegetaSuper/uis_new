@@ -47,7 +47,7 @@ const { routerReplaceToLogin } = useRouterHook()
 
 const router = useRouter()
 function handleLoginOut() {
-  const dialogInstance = window.$dialog.warning({
+  const dialogInstance = window.$dialog.info({
     title: '温馨提示',
     content: '确定要退出登录吗？',
     positiveText: '确定',

@@ -40,6 +40,8 @@ declare global {
       interface PasswordParams {
         oldPassword: string
         newPassword: string
+        id: number
+        resetPassword: number
       }
     }
 

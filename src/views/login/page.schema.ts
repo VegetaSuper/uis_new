@@ -19,12 +19,16 @@ export const formSchema: FormSchema[] = [
   },
   {
     field: 'password',
-    slot: 'password',
     span: 24,
-    type: 'slot',
+    type: 'input',
     required: true,
     requiredMessage: '请输入密码',
     requiredTrigger: ['input', 'blur'],
+    componentProps: {
+      type: 'password',
+      "show-password-on": 'click',
+      clearable: true,
+    }
   },
   {
     field: 'locale',

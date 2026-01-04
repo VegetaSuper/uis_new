@@ -23,7 +23,7 @@ export function authLoginOutApi(data: Api.Auth.LogoutParams) {
 
 export function authPasswordApi(data: Api.Auth.PasswordParams) {
   return baseHttp.request<boolean>({
-    url: '/auth/password',
+    url: '/system/user/updatePassword',
     method: 'post',
     data,
   })
